@@ -1,3 +1,20 @@
-[gd_scene format=3 uid="uid://be6q7jfn843n8"]
+[gd_scene load_steps=2 format=3 uid="uid://be6q7jfn843n8"]
+
+[ext_resource type="PackedScene" uid="uid://6s6offppodr7" path="res://scenes/player.tscn" id="1_player"]
 
 [node name="main" type="Node2D"]
+
+[node name="Player" parent="." instance=ExtResource("1_player")]
+position = Vector2(640, 400)
+
+[node name="TestGround" type="StaticBody2D" parent="."]
+
+[node name="ColorRect" type="ColorRect" parent="TestGround"]
+offset_left = -500.0
+offset_top = 500.0
+offset_right = 2000.0
+offset_bottom = 700.0
+color = Color(0.4, 0.3, 0.2, 1)
+
+[node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="TestGround"]
+polygon = PackedVector2Array(-500, 500, 2000, 500, 2000, 700, -500, 700)
