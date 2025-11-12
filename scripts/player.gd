@@ -25,12 +25,13 @@ func _physics_process(_delta):
 		head_pivot.scale.x = 1
 		head.scale.y = 1
 		head_pivot.position.x = -10
-		head_pivot.position.y = 145
+		head_pivot.position.y = -140
 	else:
 		head_pivot.scale.x = 1
 		head.scale.y = -1
 		head_pivot.position.x = 5
-		head_pivot.position.y = 150
+		head_pivot.position.y = -140
+		
 
 	# Point head at mouse
 	head_pivot.look_at(mouse_pos)
