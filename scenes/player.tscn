@@ -1,3 +1,77 @@
-[gd_scene format=3 uid="uid://6s6offppodr7"]
+[gd_scene load_steps=10 format=3 uid="uid://6s6offppodr7"]
 
-[node name="Player" type="Node2D"]
+[ext_resource type="Script" path="res://scripts/player.gd" id="1_player_script"]
+[ext_resource type="Texture2D" uid="uid://byhxv6kqm0q7p" path="res://assets/player_assets/farmer_idle.png" id="2_idle"]
+[ext_resource type="Texture2D" uid="uid://c7ghnl76gqfmf" path="res://assets/player_assets/farmer_idle_noarms.png" id="3_idle_noarms"]
+[ext_resource type="Texture2D" uid="uid://cbhqr3vuwl3x7" path="res://assets/player_assets/farmer_running.png" id="4_running"]
+[ext_resource type="Texture2D" uid="uid://bj5mlj34s4p40" path="res://assets/player_assets/farmer_walking_backwards.png" id="5_walking_backwards"]
+[ext_resource type="Texture2D" uid="uid://bl3u5n2yjx5qx" path="res://assets/player_assets/farmer_head.png" id="6_head"]
+[ext_resource type="Texture2D" uid="uid://btydxrgkj688a" path="res://assets/player_assets/arm_sprite.png" id="7_arm"]
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_player"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("2_idle")
+}],
+"loop": true,
+"name": &"idle",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("3_idle_noarms")
+}],
+"loop": true,
+"name": &"idle_noarms",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("4_running")
+}],
+"loop": true,
+"name": &"running",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("5_walking_backwards")
+}],
+"loop": true,
+"name": &"walking_backwards",
+"speed": 5.0
+}]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_collision"]
+size = Vector2(50, 200)
+
+[node name="Player" type="CharacterBody2D"]
+script = ExtResource("1_player_script")
+
+[node name="player_animation" type="AnimatedSprite2D" parent="."]
+position = Vector2(0, -100)
+sprite_frames = SubResource("SpriteFrames_player")
+animation = &"idle"
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+position = Vector2(0, -100)
+shape = SubResource("RectangleShape2D_collision")
+
+[node name="Camera2D" type="Camera2D" parent="."]
+zoom = Vector2(2, 2)
+
+[node name="ArmPivot" type="Node2D" parent="."]
+position = Vector2(0, -100)
+
+[node name="Arm" type="Sprite2D" parent="ArmPivot"]
+visible = false
+position = Vector2(50, 0)
+scale = Vector2(0.25, 0.25)
+texture = ExtResource("7_arm")
+
+[node name="HeadPivot" type="Node2D" parent="."]
+position = Vector2(-10, 145)
+
+[node name="Head" type="Sprite2D" parent="HeadPivot"]
+texture = ExtResource("6_head")
