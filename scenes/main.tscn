@@ -34,4 +34,4 @@ polygon = PackedVector2Array(900, -200, 1000, -200, 1000, 500, 900, 500)
 
 [node name="Player" parent="." instance=ExtResource("1_player")]
 position = Vector2(640, 400)
-climb_pull_strength = 1500.0
+climb_pull_strength = 50000.0
