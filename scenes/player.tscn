@@ -522,6 +522,9 @@ animations = [{
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_collision"]
 size = Vector2(50, 200)
 
+[sub_resource type="CircleShape2D" id="CircleShape2D_walldetector"]
+radius = 80.0
+
 [node name="Player" type="CharacterBody2D"]
 script = ExtResource("1_player_script")
 
@@ -553,3 +556,37 @@ position = Vector2(-8, -142)
 position = Vector2(-1, 0)
 texture = ExtResource("6_head")
 offset = Vector2(9, 33)
+
+[node name="LeftClimbArm" type="Node2D" parent="."]
+position = Vector2(-40, -150)
+
+[node name="LeftArmSprite" type="Sprite2D" parent="LeftClimbArm"]
+visible = false
+scale = Vector2(0.25, 0.25)
+texture = ExtResource("7_arm")
+offset = Vector2(136, -20)
+
+[node name="LeftArmRaycast" type="RayCast2D" parent="LeftClimbArm"]
+target_position = Vector2(0, -100)
+collision_mask = 2
+
+[node name="RightClimbArm" type="Node2D" parent="."]
+position = Vector2(40, -150)
+
+[node name="RightArmSprite" type="Sprite2D" parent="RightClimbArm"]
+visible = false
+scale = Vector2(0.25, 0.25)
+texture = ExtResource("7_arm")
+offset = Vector2(136, -20)
+
+[node name="RightArmRaycast" type="RayCast2D" parent="RightClimbArm"]
+target_position = Vector2(0, -100)
+collision_mask = 2
+
+[node name="WallDetector" type="Area2D" parent="."]
+collision_layer = 0
+collision_mask = 2
+
+[node name="DetectorShape" type="CollisionShape2D" parent="WallDetector"]
+position = Vector2(0, -100)
+shape = SubResource("CircleShape2D_walldetector")

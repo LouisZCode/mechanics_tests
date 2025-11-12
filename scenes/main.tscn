@@ -4,9 +4,6 @@
 
 [node name="main" type="Node2D"]
 
-[node name="Player" parent="." instance=ExtResource("1_player")]
-position = Vector2(640, 400)
-
 [node name="TestGround" type="StaticBody2D" parent="."]
 
 [node name="ColorRect" type="ColorRect" parent="TestGround"]
@@ -18,3 +15,23 @@ color = Color(0.4, 0.3, 0.2, 1)
 
 [node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="TestGround"]
 polygon = PackedVector2Array(-500, 500, 2000, 500, 2000, 700, -500, 700)
+
+[node name="ClimbableWall" type="StaticBody2D" parent="."]
+collision_layer = 2
+collision_mask = 0
+
+[node name="WallVisual" type="ColorRect" parent="ClimbableWall"]
+offset_left = 777.0
+offset_top = -200.0
+offset_right = 1110.0
+offset_bottom = 500.0
+color = Color(0.6, 0.4, 0.3, 1)
+
+[node name="CollisionShape2D" type="CollisionPolygon2D" parent="ClimbableWall"]
+position = Vector2(-2345.3757, 0)
+scale = Vector2(3.4625006, 1)
+polygon = PackedVector2Array(900, -200, 1000, -200, 1000, 500, 900, 500)
+
+[node name="Player" parent="." instance=ExtResource("1_player")]
+position = Vector2(640, 400)
+climb_pull_strength = 1500.0
