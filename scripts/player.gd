@@ -144,20 +144,24 @@ func attempt_grab_left(mouse_pos):
 	left_arm_raycast.target_position = direction * climb_arm_reach
 	left_arm_raycast.force_raycast_update()
 
+	print("Left arm attempting grab - Colliding: ", left_arm_raycast.is_colliding())
 	if left_arm_raycast.is_colliding():
 		left_arm_grabbed = true
 		left_grab_point = left_arm_raycast.get_collision_point()
 		left_climb_arm.look_at(left_grab_point)
+		print("Left arm GRABBED at: ", left_grab_point)
 
 func attempt_grab_right(mouse_pos):
 	var direction = (mouse_pos - right_climb_arm.global_position).normalized()
 	right_arm_raycast.target_position = direction * climb_arm_reach
 	right_arm_raycast.force_raycast_update()
 
+	print("Right arm attempting grab - Colliding: ", right_arm_raycast.is_colliding())
 	if right_arm_raycast.is_colliding():
 		right_arm_grabbed = true
 		right_grab_point = right_arm_raycast.get_collision_point()
 		right_climb_arm.look_at(right_grab_point)
+		print("Right arm GRABBED at: ", right_grab_point)
 
 func handle_normal_mode(_delta):
 	# Aiming mode
