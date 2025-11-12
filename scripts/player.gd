@@ -3,7 +3,8 @@ extends CharacterBody2D
 @export var speed = 170.0
 @export var gravity = 980.0
 @export var climb_arm_reach = 150.0
-@export var climb_pull_strength = 300.0
+@export var climb_pull_strength = 800.0
+@export var climb_pull_strength_both_hands = 100.0
 
 @onready var anim = $player_animation
 @onready var arm_pivot = $ArmPivot
@@ -20,8 +21,11 @@ extends CharacterBody2D
 @onready var right_arm_sprite = $RightClimbArm/RightArmSprite
 @onready var right_arm_raycast = $RightClimbArm/RightArmRaycast
 
+@onready var wall_detector = $WallDetector
+
 var is_aiming = false
 var is_climbing = false
+var near_climbable_wall = false
 
 # Climbing state
 var left_arm_grabbed = false
@@ -29,70 +33,115 @@ var right_arm_grabbed = false
 var left_grab_point = Vector2.ZERO
 var right_grab_point = Vector2.ZERO
 
-func _physics_process(_delta):
-	# Handle climbing mode
-	handle_climbing(_delta)
+func _ready():
+	wall_detector.body_entered.connect(_on_wall_entered)
+	wall_detector.body_exited.connect(_on_wall_exited)
 
-	# Normal mode only if not climbing
-	if not is_climbing:
+func _on_wall_entered(body):
+	if body.collision_layer & 2:  # Check if it's on layer 2 (climbable)
+		near_climbable_wall = true
+
+func _on_wall_exited(body):
+	if body.collision_layer & 2:
+		near_climbable_wall = false
+		# Exit climbing mode if we leave the wall
+		if is_climbing:
+			is_climbing = false
+
+func _physics_process(_delta):
+	# Toggle climbing mode with Q (only when near wall)
+	if Input.is_action_just_pressed("grab_left_arm"):  # Q key
+		if near_climbable_wall and not is_climbing:
+			enter_climbing_mode()
+		elif is_climbing:
+			exit_climbing_mode()
+
+	# Handle climbing or normal mode
+	if is_climbing:
+		handle_climbing(_delta)
+	else:
 		handle_normal_mode(_delta)
 
+func enter_climbing_mode():
+	is_climbing = true
+	# Show both arms
+	left_arm_sprite.visible = true
+	right_arm_sprite.visible = true
+	# Use idle_noarms animation
+	anim.play("idle_noarms")
+
+func exit_climbing_mode():
+	is_climbing = false
+	left_arm_grabbed = false
+	right_arm_grabbed = false
+	left_arm_sprite.visible = false
+	right_arm_sprite.visible = false
+
 func handle_climbing(_delta):
-	# Check for arm grab input
-	if Input.is_action_pressed("grab_left_arm"):
-		if not left_arm_grabbed:
-			attempt_grab_left()
-	else:
-		release_left_arm()
-
-	if Input.is_action_pressed("grab_right_arm"):
-		if not right_arm_grabbed:
-			attempt_grab_right()
-	else:
-		release_right_arm()
-
-	# Update climbing state
-	is_climbing = left_arm_grabbed or right_arm_grabbed
-
-	if is_climbing:
-		# Hide normal sprites, show climb arms
-		head_pivot.visible = false
-		anim.play("idle_noarms")
-		left_arm_sprite.visible = left_arm_grabbed
-		right_arm_sprite.visible = right_arm_grabbed
-
-		# Apply climbing physics
-		var pull_force = Vector2.ZERO
-		var anchor_count = 0
-
-		if left_arm_grabbed:
-			var to_left_grab = left_grab_point - global_position
-			pull_force += to_left_grab.normalized() * climb_pull_strength
-			anchor_count += 1
-
-		if right_arm_grabbed:
-			var to_right_grab = right_grab_point - global_position
-			pull_force += to_right_grab.normalized() * climb_pull_strength
-			anchor_count += 1
-
-		if anchor_count > 0:
-			pull_force /= anchor_count
-
-		# Apply gravity and pull force
-		velocity.y += gravity * _delta * 0.5  # Reduced gravity while climbing
-		velocity += pull_force * _delta
-		velocity *= 0.95  # Damping
-
-		move_and_slide()
-	else:
-		# Not climbing - restore normal sprites
-		head_pivot.visible = true
-		left_arm_sprite.visible = false
-		right_arm_sprite.visible = false
-
-func attempt_grab_left():
-	# Cast ray from mouse position toward climbable surfaces
 	var mouse_pos = get_global_mouse_position()
+
+	# Left click = grab left hand
+	if Input.is_action_pressed("ui_left_click"):
+		if not left_arm_grabbed:
+			attempt_grab_left(mouse_pos)
+	else:
+		left_arm_grabbed = false
+
+	# Right click = grab right hand
+	if Input.is_action_pressed("ui_right_click"):
+		if not right_arm_grabbed:
+			attempt_grab_right(mouse_pos)
+	else:
+		right_arm_grabbed = false
+
+	# Make arms follow mouse when not grabbed
+	if not left_arm_grabbed:
+		var direction_left = (mouse_pos - left_climb_arm.global_position).normalized()
+		left_climb_arm.look_at(mouse_pos)
+
+	if not right_arm_grabbed:
+		var direction_right = (mouse_pos - right_climb_arm.global_position).normalized()
+		right_climb_arm.look_at(mouse_pos)
+
+	# Apply climbing physics
+	var pull_force = Vector2.ZERO
+	var grabbed_count = 0
+
+	if left_arm_grabbed:
+		grabbed_count += 1
+		var to_left_grab = left_grab_point - global_position
+		pull_force += to_left_grab.normalized()
+
+	if right_arm_grabbed:
+		grabbed_count += 1
+		var to_right_grab = right_grab_point - global_position
+		pull_force += to_right_grab.normalized()
+
+	# Determine pull strength based on how many hands are grabbed
+	var current_pull_strength = climb_pull_strength
+	if grabbed_count == 2:
+		# Both hands grabbed = minimal movement (stable)
+		current_pull_strength = climb_pull_strength_both_hands
+	elif grabbed_count == 0:
+		# No hands grabbed = just fall
+		current_pull_strength = 0
+
+	if grabbed_count > 0:
+		pull_force = pull_force.normalized() * current_pull_strength
+
+	# Apply gravity (reduced when grabbed)
+	var gravity_multiplier = 0.3 if grabbed_count > 0 else 1.0
+	velocity.y += gravity * _delta * gravity_multiplier
+
+	# Apply pull force
+	velocity += pull_force * _delta
+
+	# Damping
+	velocity *= 0.95
+
+	move_and_slide()
+
+func attempt_grab_left(mouse_pos):
 	var direction = (mouse_pos - left_climb_arm.global_position).normalized()
 	left_arm_raycast.target_position = direction * climb_arm_reach
 	left_arm_raycast.force_raycast_update()
@@ -100,11 +149,9 @@ func attempt_grab_left():
 	if left_arm_raycast.is_colliding():
 		left_arm_grabbed = true
 		left_grab_point = left_arm_raycast.get_collision_point()
-		# Point arm toward grab point
 		left_climb_arm.look_at(left_grab_point)
 
-func attempt_grab_right():
-	var mouse_pos = get_global_mouse_position()
+func attempt_grab_right(mouse_pos):
 	var direction = (mouse_pos - right_climb_arm.global_position).normalized()
 	right_arm_raycast.target_position = direction * climb_arm_reach
 	right_arm_raycast.force_raycast_update()
@@ -112,14 +159,7 @@ func attempt_grab_right():
 	if right_arm_raycast.is_colliding():
 		right_arm_grabbed = true
 		right_grab_point = right_arm_raycast.get_collision_point()
-		# Point arm toward grab point
 		right_climb_arm.look_at(right_grab_point)
-
-func release_left_arm():
-	left_arm_grabbed = false
-
-func release_right_arm():
-	right_arm_grabbed = false
 
 func handle_normal_mode(_delta):
 	# Aiming mode
@@ -142,7 +182,6 @@ func handle_normal_mode(_delta):
 		head.scale.y = -1
 		head_pivot.position.x = 5
 		head_pivot.position.y = -140
-
 
 	# Point head at mouse
 	head_pivot.look_at(mouse_pos)
