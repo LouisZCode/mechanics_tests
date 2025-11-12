@@ -96,11 +96,9 @@ func handle_climbing(_delta):
 
 	# Make arms follow mouse when not grabbed
 	if not left_arm_grabbed:
-		var direction_left = (mouse_pos - left_climb_arm.global_position).normalized()
 		left_climb_arm.look_at(mouse_pos)
 
 	if not right_arm_grabbed:
-		var direction_right = (mouse_pos - right_climb_arm.global_position).normalized()
 		right_climb_arm.look_at(mouse_pos)
 
 	# Apply climbing physics
