@@ -1,6 +1,7 @@
 extends CharacterBody2D
 
 @export var speed = 170.0
+@export var gravity = 980.0
 
 @onready var anim = $player_animation
 @onready var arm_pivot = $ArmPivot
@@ -63,6 +64,12 @@ func _physics_process(_delta):
 	# Only run when moving forward
 	var is_running = Input.is_action_pressed("ui_shift") and not is_backwards
 	var current_speed = speed * 2.5 if is_running else speed
+
+	# Apply gravity
+	if not is_on_floor():
+		velocity.y += gravity * _delta
+	else:
+		velocity.y = 0
 
 	# Move
 	velocity.x = direction * current_speed
