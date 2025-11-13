@@ -1,9 +1,10 @@
-[gd_scene load_steps=5 format=3 uid="uid://be6q7jfn843n8"]
+[gd_scene load_steps=6 format=3 uid="uid://be6q7jfn843n8"]
 
 [ext_resource type="PackedScene" uid="uid://6s6offppodr7" path="res://scenes/player.tscn" id="1_player"]
 [ext_resource type="PackedScene" uid="uid://bq6j7r8tat4u2" path="res://scenes/pickable_item.tscn" id="2_pickable_item"]
 [ext_resource type="PackedScene" uid="uid://c8j2k5oap1w3" path="res://scenes/inventory_ui.tscn" id="3_inventory_ui"]
 [ext_resource type="PackedScene" path="res://scenes/player_stats_ui.tscn" id="4_player_stats_ui"]
+[ext_resource type="PackedScene" path="res://scenes/debug_console.tscn" id="5_debug_console"]
 
 [node name="main" type="Node2D"]
 
@@ -58,3 +59,5 @@ position = Vector2(1100, 450)
 [node name="InventoryUI" parent="." instance=ExtResource("3_inventory_ui")]
 
 [node name="PlayerStatsUI" parent="." instance=ExtResource("4_player_stats_ui")]
+
+[node name="DebugConsole" parent="." instance=ExtResource("5_debug_console")]
