@@ -11,6 +11,7 @@
 [ext_resource type="Script" path="res://scripts/mechanics/movement_mechanic.gd" id="8_movement_mechanic"]
 [ext_resource type="Script" path="res://scripts/mechanics/gravity_mechanic.gd" id="9_gravity_mechanic"]
 [ext_resource type="Script" path="res://scripts/mechanics/gathering_mechanic.gd" id="10_gathering_mechanic"]
+[ext_resource type="Script" path="res://scripts/mechanics/inventory_mechanic.gd" id="11_inventory_mechanic"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_ur7pv"]
 atlas = ExtResource("4_running")
@@ -568,6 +569,9 @@ script = ExtResource("9_gravity_mechanic")
 
 [node name="GatheringMechanic" type="Node" parent="."]
 script = ExtResource("10_gathering_mechanic")
+
+[node name="InventoryMechanic" type="Node" parent="."]
+script = ExtResource("11_inventory_mechanic")
 
 [node name="ItemDetectionArea" type="Area2D" parent="."]
 collision_layer = 0

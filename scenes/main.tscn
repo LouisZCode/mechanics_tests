@@ -1,7 +1,8 @@
-[gd_scene load_steps=3 format=3 uid="uid://be6q7jfn843n8"]
+[gd_scene load_steps=4 format=3 uid="uid://be6q7jfn843n8"]
 
 [ext_resource type="PackedScene" uid="uid://6s6offppodr7" path="res://scenes/player.tscn" id="1_player"]
 [ext_resource type="PackedScene" path="res://scenes/pickable_item.tscn" id="2_pickable_item"]
+[ext_resource type="PackedScene" uid="uid://c8j2k5n9p1w3" path="res://scenes/inventory_ui.tscn" id="3_inventory_ui"]
 
 [node name="main" type="Node2D"]
 
@@ -53,3 +54,5 @@ position = Vector2(550, 450)
 
 [node name="PickableItem5" parent="." instance=ExtResource("2_pickable_item")]
 position = Vector2(1100, 450)
+
+[node name="InventoryUI" parent="." instance=ExtResource("3_inventory_ui")]

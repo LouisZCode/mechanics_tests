@@ -9,6 +9,7 @@ signal direction_changed(facing_right: bool)
 @export var run_multiplier = 2.5
 
 var player: CharacterBody2D
+var inventory: InventoryMechanic
 var current_direction = 0
 var is_running = false
 var facing_right = true
@@ -17,6 +18,13 @@ func _ready():
 	player = get_parent() as CharacterBody2D
 	if not player:
 		push_error("MovementMechanic must be child of CharacterBody2D")
+
+	# Get reference to inventory (optional, for weight-based speed)
+	call_deferred("_setup_inventory")
+
+func _setup_inventory():
+	inventory = player.get_node_or_null("InventoryMechanic")
+	# Inventory is optional - if not found, speed won't be affected by weight
 
 func get_input_direction() -> float:
 	return Input.get_axis("ui_left", "ui_right")
@@ -44,6 +52,11 @@ func execute(delta: float, can_move: bool = true) -> Dictionary:
 	# Only run when moving forward
 	is_running = Input.is_action_pressed("ui_shift") and not is_backwards and current_direction != 0
 	var current_speed = speed * run_multiplier if is_running else speed
+
+	# Apply weight-based speed reduction if inventory exists
+	if inventory:
+		var weight_multiplier = inventory.get_speed_multiplier()
+		current_speed *= weight_multiplier
 
 	# Apply horizontal movement
 	player.velocity.x = current_direction * current_speed

@@ -1,0 +1,25 @@
+[gd_resource type="Resource" script_class="ItemData" load_steps=2 format=3 uid="uid://d5k1n7p3xay2"]
+
+[ext_resource type="Script" path="res://scripts/resources/item_data.gd" id="1_1"]
+
+[resource]
+script = ExtResource("1_1")
+item_name = "Iron Ore"
+item_id = "iron_ore"
+description = "Heavy iron ore from deep underground. Very valuable but weighs a lot."
+icon = null
+item_type = 0
+item_category = 0
+can_be_gathered = true
+gather_time = 3.0
+gather_hint = "Hold F to gather ore"
+slots_taken = 1
+max_stack = 99
+weight = 3.0
+stat_durability = 0
+stat_mining_power = 0
+stat_attack_damage = 0
+stat_nutrition = 0
+is_sellable = true
+sell_value = 20
+rarity = 1

@@ -13,13 +13,21 @@ extends CharacterBody2D
 @onready var movement: MovementMechanic = $MovementMechanic
 @onready var gravity_mechanic: GravityMechanic = $GravityMechanic
 @onready var gathering: GatheringMechanic = $GatheringMechanic
+@onready var inventory: InventoryMechanic = $InventoryMechanic
 
 # State
 var is_aiming = false
 
 func _ready():
+	# Add to player group (for UI and other systems to find)
+	add_to_group("player")
+
 	# Connect gathering signals
 	gathering.item_gathered.connect(_on_item_gathered)
+
+	# Connect inventory signals for feedback
+	inventory.inventory_full.connect(_on_inventory_full)
+	inventory.weight_changed.connect(_on_weight_changed)
 
 func _on_item_gathered(item_data: ItemData, quantity: int):
 	"""Handle when an item is gathered"""
@@ -27,7 +35,18 @@ func _on_item_gathered(item_data: ItemData, quantity: int):
 		print("Player gathered: %s x%d (weight: %.1f each)" % [item_data.item_name, quantity, item_data.weight])
 	else:
 		print("Player gathered: unknown item x%d" % quantity)
-	# TODO: Add to inventory when inventory system is implemented
+	# Note: Item is automatically added to inventory by GatheringMechanic
+
+func _on_inventory_full():
+	"""Handle when trying to add to full inventory"""
+	print("Inventory is full! Can't pick up more items.")
+
+func _on_weight_changed(current_weight: float, speed_multiplier: float):
+	"""Handle when inventory weight changes"""
+	var speed_percent = int(speed_multiplier * 100)
+	if speed_multiplier < 1.0:
+		print("Weight: %.1fkg - Speed reduced to %d%%" % [current_weight, speed_percent])
+	# Visual feedback could be added here (screen tint, player color, etc.)
 
 func _physics_process(delta):
 	# Handle aiming

@@ -13,6 +13,7 @@ signal gathering_progress(progress: float, total: float)  # For UI feedback
 
 var player: CharacterBody2D
 var detection_area: Area2D
+var inventory: InventoryMechanic
 var nearby_items: Array[Area2D] = []
 var nearest_item: Area2D = null
 var cooldown_timer = 0.0
@@ -28,6 +29,7 @@ func _ready():
 
 	# Get the ItemDetectionArea (will be added as sibling)
 	call_deferred("_setup_detection_area")
+	call_deferred("_setup_inventory")
 
 func _setup_detection_area():
 	detection_area = player.get_node_or_null("ItemDetectionArea")
@@ -36,6 +38,11 @@ func _setup_detection_area():
 		detection_area.area_exited.connect(_on_item_exited)
 	else:
 		push_warning("ItemDetectionArea not found on player. Add it to player.tscn")
+
+func _setup_inventory():
+	inventory = player.get_node_or_null("InventoryMechanic")
+	if not inventory:
+		push_warning("InventoryMechanic not found on player. Gathering will work but items won't be stored.")
 
 func _on_item_entered(area: Area2D):
 	"""Track items that enter detection range"""
@@ -151,7 +158,16 @@ func gather_item(item: Area2D):
 	if item.has_method("get_quantity"):
 		quantity = item.get_quantity()
 
-	# Notify item it's been picked up
+	# Check if inventory can hold the item
+	if inventory and not inventory.can_add_item(item_data, quantity):
+		print("Inventory is full! Can't pick up %s" % item_data.item_name)
+		return
+
+	# Add to inventory if available
+	if inventory:
+		inventory.add_item(item_data, quantity)
+
+	# Notify item it's been picked up (removes from world)
 	if item.has_method("pickup"):
 		item.pickup()
 

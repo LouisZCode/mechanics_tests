@@ -1,0 +1,33 @@
+[gd_scene load_steps=2 format=3 uid="uid://c8j2k5oap1w3"]
+
+[ext_resource type="Script" path="res://scripts/ui/inventory_ui.gd" id="1_1"]
+
+[node name="InventoryUI" type="CanvasLayer"]
+script = ExtResource("1_1")
+
+[node name="InventoryLabel" type="Label" parent="."]
+offset_left = 10.0
+offset_top = 10.0
+offset_right = 150.0
+offset_bottom = 33.0
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 2
+text = "Inventory: 0/10"
+
+[node name="QuickslotLabel" type="Label" parent="."]
+offset_left = 10.0
+offset_top = 30.0
+offset_right = 150.0
+offset_bottom = 53.0
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 2
+text = "Quick: 0/3"
+
+[node name="WeightLabel" type="Label" parent="."]
+offset_left = 10.0
+offset_top = 50.0
+offset_right = 200.0
+offset_bottom = 73.0
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 2
+text = "Weight: 0.0kg (100%)"
