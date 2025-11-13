@@ -5,8 +5,10 @@ extends Node
 
 signal item_gathered(item_type: String, quantity: int)
 signal nearest_item_changed(item: Area2D)
+signal gathering_progress(progress: float, total: float)  # For UI feedback
 
 @export var gather_range = 100.0
+@export var gather_time = 2.0  # Time in seconds to hold F to gather
 @export var gather_cooldown = 0.2
 
 var player: CharacterBody2D
@@ -14,6 +16,9 @@ var detection_area: Area2D
 var nearby_items: Array[Area2D] = []
 var nearest_item: Area2D = null
 var cooldown_timer = 0.0
+var gathering_progress_timer = 0.0
+var is_gathering = false
+var target_item: Area2D = null  # Item being gathered
 
 func _ready():
 	player = get_parent() as CharacterBody2D
@@ -74,8 +79,11 @@ func _update_nearest_item():
 		nearest_item_changed.emit(nearest_item)
 
 func can_activate() -> bool:
-	"""Check if we can gather an item"""
-	return cooldown_timer <= 0.0 and nearest_item != null and is_instance_valid(nearest_item)
+	"""Check if we can start gathering an item"""
+	return (cooldown_timer <= 0.0
+		and nearest_item != null
+		and is_instance_valid(nearest_item)
+		and (not is_gathering or target_item == nearest_item))
 
 func execute(delta: float):
 	"""Main gathering logic - called every frame"""
@@ -86,10 +94,38 @@ func execute(delta: float):
 	# Update nearest item each frame
 	_update_nearest_item()
 
-	# Check for gather input
-	if Input.is_action_just_pressed("interact"):
-		if can_activate():
-			gather_item(nearest_item)
+	# Handle gathering input (hold to gather)
+	if Input.is_action_pressed("interact") and can_activate():
+		# Start or continue gathering
+		if not is_gathering:
+			# Start gathering
+			is_gathering = true
+			target_item = nearest_item
+			gathering_progress_timer = 0.0
+			print("Started gathering...")
+
+		# Progress gathering timer
+		gathering_progress_timer += delta
+
+		# Emit progress signal for UI feedback
+		gathering_progress.emit(gathering_progress_timer, gather_time)
+
+		# Check if gathering is complete
+		if gathering_progress_timer >= gather_time:
+			# Complete gathering
+			if is_instance_valid(target_item):
+				gather_item(target_item)
+			# Reset gathering state
+			is_gathering = false
+			gathering_progress_timer = 0.0
+			target_item = null
+	else:
+		# Key released or can't gather - reset progress
+		if is_gathering:
+			print("Gathering cancelled")
+			is_gathering = false
+			gathering_progress_timer = 0.0
+			target_item = null
 
 func gather_item(item: Area2D):
 	"""Pick up an item"""
@@ -125,8 +161,14 @@ func gather_item(item: Area2D):
 	print("Gathered: %s x%d" % [item_type, quantity])
 
 func is_active() -> bool:
-	"""Check if this mechanic is currently active"""
-	return nearest_item != null
+	"""Check if this mechanic is currently active (gathering in progress)"""
+	return is_gathering
+
+func get_gathering_progress() -> float:
+	"""Get current gathering progress as percentage (0.0 to 1.0)"""
+	if is_gathering:
+		return gathering_progress_timer / gather_time
+	return 0.0
 
 func get_nearest_item() -> Area2D:
 	"""Get the currently nearest pickable item"""
