@@ -12,9 +12,19 @@ extends CharacterBody2D
 # Mechanics (these will be added as child nodes in the scene)
 @onready var movement: MovementMechanic = $MovementMechanic
 @onready var gravity_mechanic: GravityMechanic = $GravityMechanic
+@onready var gathering: GatheringMechanic = $GatheringMechanic
 
 # State
 var is_aiming = false
+
+func _ready():
+	# Connect gathering signals
+	gathering.item_gathered.connect(_on_item_gathered)
+
+func _on_item_gathered(item_type: String, quantity: int):
+	"""Handle when an item is gathered"""
+	print("Player gathered: %s x%d" % [item_type, quantity])
+	# TODO: Add to inventory when inventory system is implemented
 
 func _physics_process(delta):
 	# Handle aiming
@@ -38,6 +48,7 @@ func _physics_process(delta):
 	# Execute mechanics
 	gravity_mechanic.execute(delta)
 	var movement_state = movement.execute(delta, not is_aiming)
+	gathering.execute(delta)
 
 	# Apply physics
 	move_and_slide()

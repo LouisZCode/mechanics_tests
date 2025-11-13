@@ -1,6 +1,7 @@
-[gd_scene load_steps=2 format=3 uid="uid://be6q7jfn843n8"]
+[gd_scene load_steps=3 format=3 uid="uid://be6q7jfn843n8"]
 
 [ext_resource type="PackedScene" uid="uid://6s6offppodr7" path="res://scenes/player.tscn" id="1_player"]
+[ext_resource type="PackedScene" uid="uid://bq6j7r8s9t4u2" path="res://scenes/pickable_item.tscn" id="2_pickable_item"]
 
 [node name="main" type="Node2D"]
 
@@ -37,3 +38,18 @@ polygon = PackedVector2Array(900, -200, 1000, -200, 1000, 500, 900, 500)
 
 [node name="Player" parent="." instance=ExtResource("1_player")]
 position = Vector2(640, 400)
+
+[node name="PickableItem1" parent="." instance=ExtResource("2_pickable_item")]
+position = Vector2(400, 450)
+
+[node name="PickableItem2" parent="." instance=ExtResource("2_pickable_item")]
+position = Vector2(700, 450)
+
+[node name="PickableItem3" parent="." instance=ExtResource("2_pickable_item")]
+position = Vector2(900, 450)
+
+[node name="PickableItem4" parent="." instance=ExtResource("2_pickable_item")]
+position = Vector2(550, 450)
+
+[node name="PickableItem5" parent="." instance=ExtResource("2_pickable_item")]
+position = Vector2(1100, 450)
