@@ -1,9 +1,9 @@
 [gd_scene load_steps=5 format=3 uid="uid://be6q7jfn843n8"]
 
 [ext_resource type="PackedScene" uid="uid://6s6offppodr7" path="res://scenes/player.tscn" id="1_player"]
-[ext_resource type="PackedScene" path="res://scenes/pickable_item.tscn" id="2_pickable_item"]
-[ext_resource type="PackedScene" uid="uid://c8j2k5n9p1w3" path="res://scenes/inventory_ui.tscn" id="3_inventory_ui"]
-[ext_resource type="PackedScene" uid="uid://d9k3m7p5r2x4" path="res://scenes/player_stats_ui.tscn" id="4_player_stats_ui"]
+[ext_resource type="PackedScene" uid="uid://bq6j7r8tat4u2" path="res://scenes/pickable_item.tscn" id="2_pickable_item"]
+[ext_resource type="PackedScene" uid="uid://c8j2k5oap1w3" path="res://scenes/inventory_ui.tscn" id="3_inventory_ui"]
+[ext_resource type="PackedScene" path="res://scenes/player_stats_ui.tscn" id="4_player_stats_ui"]
 
 [node name="main" type="Node2D"]
 
@@ -22,7 +22,6 @@ scale = Vector2(1, 0.959375)
 polygon = PackedVector2Array(-500, 500, 2000, 500, 2000, 700, -500, 700)
 
 [node name="ClimbableWall" type="StaticBody2D" parent="."]
-visible = false
 collision_layer = 2
 collision_mask = 0
 
@@ -34,9 +33,9 @@ offset_bottom = 500.0
 color = Color(0.6, 0.4, 0.3, 1)
 
 [node name="CollisionShape2D" type="CollisionPolygon2D" parent="ClimbableWall"]
-position = Vector2(-2345.3757, 0)
-scale = Vector2(3.4625006, 1)
-polygon = PackedVector2Array(900, -200, 1000, -200, 1000, 500, 900, 500)
+position = Vector2(-2.6688232, 0.36608887)
+scale = Vector2(1.0039415, 1.0008929)
+polygon = PackedVector2Array(777, -200, 1110, -200, 1110, 500, 777, 500)
 
 [node name="Player" parent="." instance=ExtResource("1_player")]
 position = Vector2(640, 400)

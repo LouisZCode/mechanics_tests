@@ -12,6 +12,7 @@
 [ext_resource type="Script" uid="uid://cprta7w46lst3" path="res://scripts/mechanics/gravity_mechanic.gd" id="9_gravity_mechanic"]
 [ext_resource type="Script" uid="uid://dqbxdbir4cus2" path="res://scripts/mechanics/gathering_mechanic.gd" id="10_gathering_mechanic"]
 [ext_resource type="Script" uid="uid://cl5nbdyutdnc6" path="res://scripts/mechanics/inventory_mechanic.gd" id="11_inventory_mechanic"]
+[ext_resource type="Script" path="res://scripts/mechanics/climbing_mechanic.gd" id="12_climbing_mechanic"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_ur7pv"]
 atlas = ExtResource("4_running")
@@ -529,6 +530,9 @@ size = Vector2(50, 200)
 [sub_resource type="CircleShape2D" id="CircleShape2D_itemdetection"]
 radius = 100.0
 
+[sub_resource type="CircleShape2D" id="CircleShape2D_climbdetection"]
+radius = 50.0
+
 [node name="Player" type="CharacterBody2D"]
 script = ExtResource("1_player_script")
 
@@ -573,6 +577,9 @@ script = ExtResource("10_gathering_mechanic")
 [node name="InventoryMechanic" type="Node" parent="."]
 script = ExtResource("11_inventory_mechanic")
 
+[node name="ClimbingMechanic" type="Node" parent="."]
+script = ExtResource("12_climbing_mechanic")
+
 [node name="ItemDetectionArea" type="Area2D" parent="."]
 collision_layer = 0
 collision_mask = 4
@@ -580,3 +587,11 @@ collision_mask = 4
 [node name="CollisionShape2D" type="CollisionShape2D" parent="ItemDetectionArea"]
 position = Vector2(0, -100)
 shape = SubResource("CircleShape2D_itemdetection")
+
+[node name="ClimbDetectionArea" type="Area2D" parent="."]
+collision_layer = 0
+collision_mask = 2
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="ClimbDetectionArea"]
+position = Vector2(0, -100)
+shape = SubResource("CircleShape2D_climbdetection")

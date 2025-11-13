@@ -331,6 +331,16 @@ func _process(delta):
 		restore_energy(current_energy_regen * delta)
 
 # ============================================================================
+# CLIMBING METHODS
+# ============================================================================
+
+func get_climb_speed() -> float:
+	return current_climb_speed
+
+func get_climb_energy_cost() -> float:
+	return current_climb_energy_cost
+
+# ============================================================================
 # UPGRADE SYSTEM
 # ============================================================================
 

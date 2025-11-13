@@ -14,6 +14,7 @@ extends CharacterBody2D
 @onready var gravity_mechanic: GravityMechanic = $GravityMechanic
 @onready var gathering: GatheringMechanic = $GatheringMechanic
 @onready var inventory: InventoryMechanic = $InventoryMechanic
+@onready var climbing: ClimbingMechanic = $ClimbingMechanic
 
 # State
 var is_aiming = false
@@ -68,15 +69,24 @@ func _physics_process(delta):
 		update_arm_rotation(mouse_pos, movement.facing_right)
 
 	# Execute mechanics
-	gravity_mechanic.execute(delta)
-	var movement_state = movement.execute(delta, not is_aiming)
-	gathering.execute(delta)
+	# Climbing takes priority over normal movement
+	var climb_state = climbing.execute(delta)
+
+	if not climb_state.is_climbing:
+		# Normal movement and gravity when not climbing
+		gravity_mechanic.execute(delta)
+		var movement_state = movement.execute(delta, not is_aiming)
+		gathering.execute(delta)
+
+		# Update animations for normal movement
+		update_animations(movement_state)
+	else:
+		# Climbing mode - disable gathering
+		# Animations for climbing (for now, just show idle)
+		anim.play("idle")
 
 	# Apply physics
 	move_and_slide()
-
-	# Update animations
-	update_animations(movement_state)
 
 func update_sprite_facing(facing_right: bool):
 	"""Update main sprite facing direction"""
