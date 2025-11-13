@@ -3,12 +3,12 @@ extends Node
 
 ## Handles gathering/picking up items in the world
 
-signal item_gathered(item_type: String, quantity: int)
+signal item_gathered(item_data: ItemData, quantity: int)
 signal nearest_item_changed(item: Area2D)
 signal gathering_progress(progress: float, total: float)  # For UI feedback
 
 @export var gather_range = 100.0
-@export var gather_time = 2.0  # Time in seconds to hold F to gather
+@export var default_gather_time = 2.0  # Fallback if item has no gather time
 @export var gather_cooldown = 0.2
 
 var player: CharacterBody2D
@@ -102,16 +102,26 @@ func execute(delta: float):
 			is_gathering = true
 			target_item = nearest_item
 			gathering_progress_timer = 0.0
-			print("Started gathering...")
+
+			# Get item name for feedback
+			var item_name = "item"
+			if target_item.has_method("get_item_data"):
+				var data = target_item.get_item_data()
+				if data:
+					item_name = data.item_name
+			print("Started gathering %s..." % item_name)
+
+		# Get current item's gather time
+		var current_gather_time = get_item_gather_time(target_item)
 
 		# Progress gathering timer
 		gathering_progress_timer += delta
 
 		# Emit progress signal for UI feedback
-		gathering_progress.emit(gathering_progress_timer, gather_time)
+		gathering_progress.emit(gathering_progress_timer, current_gather_time)
 
 		# Check if gathering is complete
-		if gathering_progress_timer >= gather_time:
+		if gathering_progress_timer >= current_gather_time:
 			# Complete gathering
 			if is_instance_valid(target_item):
 				gather_item(target_item)
@@ -132,12 +142,12 @@ func gather_item(item: Area2D):
 	if not is_instance_valid(item):
 		return
 
-	# Get item data
-	var item_type = "unknown"
+	# Get ItemData and quantity
+	var item_data: ItemData = null
 	var quantity = 1
 
-	if item.has_method("get_item_type"):
-		item_type = item.get_item_type()
+	if item.has_method("get_item_data"):
+		item_data = item.get_item_data()
 	if item.has_method("get_quantity"):
 		quantity = item.get_quantity()
 
@@ -145,8 +155,8 @@ func gather_item(item: Area2D):
 	if item.has_method("pickup"):
 		item.pickup()
 
-	# Emit signal
-	item_gathered.emit(item_type, quantity)
+	# Emit signal with ItemData
+	item_gathered.emit(item_data, quantity)
 
 	# Remove from tracking
 	if item in nearby_items:
@@ -158,7 +168,22 @@ func gather_item(item: Area2D):
 	# Update nearest item
 	_update_nearest_item()
 
-	print("Gathered: %s x%d" % [item_type, quantity])
+	# Print feedback
+	if item_data:
+		print("Gathered: %s x%d" % [item_data.item_name, quantity])
+	else:
+		print("Gathered: unknown item x%d" % quantity)
+
+func get_item_gather_time(item: Area2D) -> float:
+	"""Get the gather time for a specific item"""
+	if not is_instance_valid(item):
+		return default_gather_time
+
+	if item.has_method("get_gather_time"):
+		return item.get_gather_time()
+
+	# Fallback to default
+	return default_gather_time
 
 func is_active() -> bool:
 	"""Check if this mechanic is currently active (gathering in progress)"""
@@ -166,8 +191,9 @@ func is_active() -> bool:
 
 func get_gathering_progress() -> float:
 	"""Get current gathering progress as percentage (0.0 to 1.0)"""
-	if is_gathering:
-		return gathering_progress_timer / gather_time
+	if is_gathering and target_item:
+		var current_gather_time = get_item_gather_time(target_item)
+		return gathering_progress_timer / current_gather_time
 	return 0.0
 
 func get_nearest_item() -> Area2D:

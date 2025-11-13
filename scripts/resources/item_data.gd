@@ -1,0 +1,99 @@
+class_name ItemData
+extends Resource
+
+## Base template for all items in the game
+## Create individual .tres files for each item (wood, stone, tools, etc.)
+
+# Basic Info
+@export_group("Basic Info")
+@export var item_name: String = "Item"
+@export var item_id: String = "item"  # Unique identifier
+@export_multiline var description: String = ""
+@export var icon: Texture2D
+
+# Item Classification
+@export_group("Classification")
+@export var item_type: ItemType = ItemType.RESOURCE
+@export var item_category: ItemCategory = ItemCategory.MATERIAL
+
+enum ItemType {
+	RESOURCE,    # Raw materials (wood, stone, ore)
+	TOOL,        # Pickaxe, shovel, etc.
+	WEAPON,      # Combat items
+	CONSUMABLE,  # Food, potions
+	EQUIPMENT    # Wearable items
+}
+
+enum ItemCategory {
+	MATERIAL,    # Basic crafting materials
+	FOOD,        # Edible items
+	MINING,      # Mining-related tools/resources
+	FARMING,     # Farming-related items
+	COMBAT,      # Combat items
+	MISC         # Other items
+}
+
+# Gathering Properties
+@export_group("Gathering")
+@export var can_be_gathered: bool = true
+@export var gather_time: float = 2.0  # Seconds to hold F to gather
+@export_multiline var gather_hint: String = "Hold F to gather"
+
+# Inventory Properties
+@export_group("Inventory")
+@export var slots_taken: int = 1  # How many inventory slots this item occupies
+@export var max_stack: int = 99  # Maximum stack size (1 = doesn't stack)
+@export var weight: float = 1.0  # Affects climbing speed, carry capacity
+
+# Item Stats (for tools/weapons)
+@export_group("Stats", "stat_")
+@export var stat_durability: int = 0  # 0 = doesn't break (resources)
+@export var stat_mining_power: int = 0  # For tools
+@export var stat_attack_damage: int = 0  # For weapons
+@export var stat_nutrition: int = 0  # For food
+
+# Advanced Properties
+@export_group("Advanced")
+@export var is_sellable: bool = true
+@export var sell_value: int = 10
+@export var rarity: Rarity = Rarity.COMMON
+
+enum Rarity {
+	COMMON,
+	UNCOMMON,
+	RARE,
+	EPIC,
+	LEGENDARY
+}
+
+# Methods for item behavior
+
+func get_display_name() -> String:
+	"""Get formatted display name"""
+	return item_name
+
+func get_total_weight(quantity: int) -> float:
+	"""Calculate total weight for a stack"""
+	return weight * quantity
+
+func can_stack_with(other: ItemData) -> bool:
+	"""Check if this item can stack with another"""
+	if other == null:
+		return false
+	return other.item_id == item_id and max_stack > 1
+
+func get_gather_time_display() -> String:
+	"""Get human-readable gather time"""
+	return "%.1f seconds" % gather_time
+
+func is_tool() -> bool:
+	"""Check if this is a tool"""
+	return item_type == ItemType.TOOL
+
+func is_resource() -> bool:
+	"""Check if this is a resource"""
+	return item_type == ItemType.RESOURCE
+
+func is_consumable() -> bool:
+	"""Check if this is consumable"""
+	return item_type == ItemType.CONSUMABLE

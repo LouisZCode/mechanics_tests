@@ -21,9 +21,12 @@ func _ready():
 	# Connect gathering signals
 	gathering.item_gathered.connect(_on_item_gathered)
 
-func _on_item_gathered(item_type: String, quantity: int):
+func _on_item_gathered(item_data: ItemData, quantity: int):
 	"""Handle when an item is gathered"""
-	print("Player gathered: %s x%d" % [item_type, quantity])
+	if item_data:
+		print("Player gathered: %s x%d (weight: %.1f each)" % [item_data.item_name, quantity, item_data.weight])
+	else:
+		print("Player gathered: unknown item x%d" % quantity)
 	# TODO: Add to inventory when inventory system is implemented
 
 func _physics_process(delta):
