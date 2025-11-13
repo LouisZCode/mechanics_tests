@@ -60,8 +60,17 @@ func _update_nearest_item():
 			closest_distance = distance
 			nearest_item = item
 
-	# Emit signal if nearest item changed
+	# Update highlighting when nearest item changes
 	if nearest_item != previous_nearest:
+		# Remove highlight from previous item
+		if previous_nearest and is_instance_valid(previous_nearest) and previous_nearest.has_method("set_highlighted"):
+			previous_nearest.set_highlighted(false)
+
+		# Highlight new nearest item
+		if nearest_item and nearest_item.has_method("set_highlighted"):
+			nearest_item.set_highlighted(true)
+
+		# Emit signal
 		nearest_item_changed.emit(nearest_item)
 
 func can_activate() -> bool:
