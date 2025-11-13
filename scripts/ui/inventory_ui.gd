@@ -35,14 +35,14 @@ func _update_display():
 	if not inventory:
 		return
 
-	# Main inventory display
+	# Main inventory display (get max from PlayerGlobals)
 	var main_used = inventory.get_main_used_slots()
-	var main_max = inventory.max_main_slots
+	var main_max = PlayerGlobals.get_max_main_slots()
 	inventory_label.text = "Inventory: %d/%d" % [main_used, main_max]
 
-	# Quickslots display
+	# Quickslots display (get max from PlayerGlobals)
 	var quick_used = inventory.get_quick_used_slots()
-	var quick_max = inventory.max_quick_slots
+	var quick_max = PlayerGlobals.get_max_quick_slots()
 	quickslot_label.text = "Quick: %d/%d" % [quick_used, quick_max]
 
 	# Weight display (will be updated by separate signal)

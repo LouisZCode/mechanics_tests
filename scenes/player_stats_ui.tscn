@@ -1,0 +1,45 @@
+[gd_scene load_steps=2 format=3 uid="uid://eak3m7p5r2x4"]
+
+[ext_resource type="Script" path="res://scripts/ui/player_stats_ui.gd" id="1_1"]
+
+[node name="PlayerStatsUI" type="CanvasLayer"]
+script = ExtResource("1_1")
+
+[node name="MovementLabel" type="Label" parent="."]
+anchors_preset = 2
+anchor_top = 1.0
+anchor_bottom = 1.0
+offset_left = 10.0
+offset_top = -70.0
+offset_right = 300.0
+offset_bottom = -50.0
+grow_vertical = 0
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 2
+text = "Movement: 170 (Run: x2.5)"
+
+[node name="GatheringLabel" type="Label" parent="."]
+anchors_preset = 2
+anchor_top = 1.0
+anchor_bottom = 1.0
+offset_left = 10.0
+offset_top = -50.0
+offset_right = 350.0
+offset_bottom = -30.0
+grow_vertical = 0
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 2
+text = "Gather: Range 100px | Speed x1.00"
+
+[node name="InventoryStatsLabel" type="Label" parent="."]
+anchors_preset = 2
+anchor_top = 1.0
+anchor_bottom = 1.0
+offset_left = 10.0
+offset_top = -30.0
+offset_right = 400.0
+offset_bottom = -10.0
+grow_vertical = 0
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 2
+text = "Capacity: 10/3 | Weight: 7/10/15/20 kg"

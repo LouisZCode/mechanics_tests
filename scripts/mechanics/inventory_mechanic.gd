@@ -2,25 +2,13 @@ class_name InventoryMechanic
 extends Node
 
 ## Manages player inventory with main slots and quickslots, weight system
+## Uses PlayerGlobals for capacity and weight thresholds (upgradeable)
 
 signal inventory_changed()
 signal item_added(item_data: ItemData, quantity: int, is_quickslot: bool)
 signal item_removed(item_data: ItemData, quantity: int, is_quickslot: bool)
 signal inventory_full()
 signal weight_changed(current_weight: float, speed_multiplier: float)
-
-# Inventory Configuration
-@export_group("Inventory Slots")
-@export var max_main_slots: int = 10
-@export var max_quick_slots: int = 3
-
-# Weight System
-@export_group("Weight Thresholds")
-@export var weight_threshold_1: float = 7.0   # No penalty below this
-@export var weight_threshold_2: float = 10.0  # 90% speed
-@export var weight_threshold_3: float = 15.0  # 75% speed
-@export var weight_threshold_4: float = 20.0  # 50% speed
-@export var quickslot_weight_multiplier: float = 0.7  # Items in quickslots weigh 70%
 
 # Internal storage
 var main_inventory: Array[InventorySlot] = []
@@ -37,14 +25,18 @@ func _ready():
 	_initialize_slots()
 
 func _initialize_slots():
-	"""Create empty inventory slots"""
+	"""Create empty inventory slots based on PlayerGlobals capacity"""
 	main_inventory.clear()
 	quickslots.clear()
 
-	for i in range(max_main_slots):
+	# Get current max slots from PlayerGlobals (upgradeable)
+	var max_main = PlayerGlobals.get_max_main_slots()
+	var max_quick = PlayerGlobals.get_max_quick_slots()
+
+	for i in range(max_main):
 		main_inventory.append(InventorySlot.new())
 
-	for i in range(max_quick_slots):
+	for i in range(max_quick):
 		quickslots.append(InventorySlot.new())
 
 func can_add_item(item_data: ItemData, quantity: int, to_quickslot: bool = false) -> bool:
@@ -190,21 +182,24 @@ func _recalculate_weight():
 	for slot in main_inventory:
 		total += slot.get_total_weight()
 
-	# Quickslots (70% weight)
+	# Quickslots (get multiplier from PlayerGlobals)
+	var quickslot_mult = PlayerGlobals.quickslot_weight_multiplier
 	for slot in quickslots:
-		total += slot.get_total_weight() * quickslot_weight_multiplier
+		total += slot.get_total_weight() * quickslot_mult
 
 	current_weight = total
 	var speed_mult = get_speed_multiplier()
 	weight_changed.emit(current_weight, speed_mult)
 
 func get_speed_multiplier() -> float:
-	"""Get movement speed multiplier based on weight (stepped thresholds)"""
-	if current_weight < weight_threshold_1:
+	"""Get movement speed multiplier based on weight (stepped thresholds from PlayerGlobals)"""
+	var thresholds = PlayerGlobals.get_weight_thresholds()
+
+	if current_weight < thresholds.threshold_1:
 		return 1.0  # 100% speed
-	elif current_weight < weight_threshold_2:
+	elif current_weight < thresholds.threshold_2:
 		return 0.9  # 90% speed
-	elif current_weight < weight_threshold_3:
+	elif current_weight < thresholds.threshold_3:
 		return 0.75  # 75% speed
 	else:
 		return 0.5  # 50% speed
@@ -227,11 +222,11 @@ func get_quick_used_slots() -> int:
 
 func is_main_inventory_full() -> bool:
 	"""Check if main inventory has no empty slots"""
-	return get_main_used_slots() >= max_main_slots
+	return get_main_used_slots() >= PlayerGlobals.get_max_main_slots()
 
 func is_quickslots_full() -> bool:
 	"""Check if quickslots have no empty slots"""
-	return get_quick_used_slots() >= max_quick_slots
+	return get_quick_used_slots() >= PlayerGlobals.get_max_quick_slots()
 
 func get_item_count(item_id: String) -> int:
 	"""Get total count of a specific item across all inventories"""

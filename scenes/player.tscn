@@ -1,4 +1,4 @@
-[gd_scene load_steps=79 format=3 uid="uid://6s6offppodr7"]
+[gd_scene load_steps=84 format=3 uid="uid://6s6offppodr7"]
 
 [ext_resource type="Script" uid="uid://dl6blsrayjmx0" path="res://scripts/player.gd" id="1_player_script"]
 [ext_resource type="Texture2D" uid="uid://bjq3ysjhm6ier" path="res://assets/player_assets/farmer_idle.png" id="2_idle"]
@@ -8,10 +8,10 @@
 [ext_resource type="Texture2D" uid="uid://dslu3e14eaa6y" path="res://assets/player_assets/farmer_walking_backwards.png" id="5_walking_backwards"]
 [ext_resource type="Texture2D" uid="uid://daucnneyhynox" path="res://assets/player_assets/farmer_head.png" id="6_head"]
 [ext_resource type="Texture2D" uid="uid://dfyuu16n3yslf" path="res://assets/player_assets/arm_sprite.png" id="7_arm"]
-[ext_resource type="Script" path="res://scripts/mechanics/movement_mechanic.gd" id="8_movement_mechanic"]
-[ext_resource type="Script" path="res://scripts/mechanics/gravity_mechanic.gd" id="9_gravity_mechanic"]
-[ext_resource type="Script" path="res://scripts/mechanics/gathering_mechanic.gd" id="10_gathering_mechanic"]
-[ext_resource type="Script" path="res://scripts/mechanics/inventory_mechanic.gd" id="11_inventory_mechanic"]
+[ext_resource type="Script" uid="uid://bjcdybaglr1u3" path="res://scripts/mechanics/movement_mechanic.gd" id="8_movement_mechanic"]
+[ext_resource type="Script" uid="uid://cprta7w46lst3" path="res://scripts/mechanics/gravity_mechanic.gd" id="9_gravity_mechanic"]
+[ext_resource type="Script" uid="uid://dqbxdbir4cus2" path="res://scripts/mechanics/gathering_mechanic.gd" id="10_gathering_mechanic"]
+[ext_resource type="Script" uid="uid://cl5nbdyutdnc6" path="res://scripts/mechanics/inventory_mechanic.gd" id="11_inventory_mechanic"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_ur7pv"]
 atlas = ExtResource("4_running")

@@ -2,11 +2,9 @@ class_name MovementMechanic
 extends Node
 
 ## Handles basic player movement, running, and physics
+## Uses PlayerGlobals for speed values (upgradeable)
 
 signal direction_changed(facing_right: bool)
-
-@export var speed = 170.0
-@export var run_multiplier = 2.5
 
 var player: CharacterBody2D
 var inventory: InventoryMechanic
@@ -51,7 +49,11 @@ func execute(delta: float, can_move: bool = true) -> Dictionary:
 
 	# Only run when moving forward
 	is_running = Input.is_action_pressed("ui_shift") and not is_backwards and current_direction != 0
-	var current_speed = speed * run_multiplier if is_running else speed
+
+	# Get speed from PlayerGlobals (upgradeable stats)
+	var base_speed = PlayerGlobals.get_movement_speed()
+	var run_mult = PlayerGlobals.get_run_multiplier()
+	var current_speed = base_speed * run_mult if is_running else base_speed
 
 	# Apply weight-based speed reduction if inventory exists
 	if inventory:

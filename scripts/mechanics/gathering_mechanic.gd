@@ -2,14 +2,11 @@ class_name GatheringMechanic
 extends Node
 
 ## Handles gathering/picking up items in the world
+## Uses PlayerGlobals for gather range, speed, and cooldown (upgradeable)
 
 signal item_gathered(item_data: ItemData, quantity: int)
 signal nearest_item_changed(item: Area2D)
 signal gathering_progress(progress: float, total: float)  # For UI feedback
-
-@export var gather_range = 100.0
-@export var default_gather_time = 2.0  # Fallback if item has no gather time
-@export var gather_cooldown = 0.2
 
 var player: CharacterBody2D
 var detection_area: Area2D
@@ -60,7 +57,7 @@ func _update_nearest_item():
 	"""Find the closest item to the player"""
 	var previous_nearest = nearest_item
 	nearest_item = null
-	var closest_distance = gather_range
+	var closest_distance = PlayerGlobals.get_gather_range()
 
 	for item in nearby_items:
 		if not is_instance_valid(item):
@@ -179,7 +176,7 @@ func gather_item(item: Area2D):
 		nearby_items.erase(item)
 
 	# Start cooldown
-	cooldown_timer = gather_cooldown
+	cooldown_timer = PlayerGlobals.get_gather_cooldown()
 
 	# Update nearest item
 	_update_nearest_item()
@@ -191,15 +188,20 @@ func gather_item(item: Area2D):
 		print("Gathered: unknown item x%d" % quantity)
 
 func get_item_gather_time(item: Area2D) -> float:
-	"""Get the gather time for a specific item"""
+	"""Get the gather time for a specific item (modified by gather speed upgrades)"""
+	var base_time: float
+
 	if not is_instance_valid(item):
-		return default_gather_time
+		base_time = PlayerGlobals.get_default_gather_time()
+	elif item.has_method("get_gather_time"):
+		base_time = item.get_gather_time()
+	else:
+		base_time = PlayerGlobals.get_default_gather_time()
 
-	if item.has_method("get_gather_time"):
-		return item.get_gather_time()
-
-	# Fallback to default
-	return default_gather_time
+	# Apply gather speed multiplier from upgrades
+	# Higher multiplier = faster gathering (e.g., 1.5 = 50% faster, divide time by 1.5)
+	var speed_multiplier = PlayerGlobals.get_gather_speed_multiplier()
+	return base_time / speed_multiplier
 
 func is_active() -> bool:
 	"""Check if this mechanic is currently active (gathering in progress)"""
