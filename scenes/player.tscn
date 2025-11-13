@@ -8,6 +8,8 @@
 [ext_resource type="Texture2D" uid="uid://dslu3e14eaa6y" path="res://assets/player_assets/farmer_walking_backwards.png" id="5_walking_backwards"]
 [ext_resource type="Texture2D" uid="uid://daucnneyhynox" path="res://assets/player_assets/farmer_head.png" id="6_head"]
 [ext_resource type="Texture2D" uid="uid://dfyuu16n3yslf" path="res://assets/player_assets/arm_sprite.png" id="7_arm"]
+[ext_resource type="Script" path="res://scripts/mechanics/movement_mechanic.gd" id="8_movement_mechanic"]
+[ext_resource type="Script" path="res://scripts/mechanics/gravity_mechanic.gd" id="9_gravity_mechanic"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_ur7pv"]
 atlas = ExtResource("4_running")
@@ -522,9 +524,6 @@ animations = [{
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_collision"]
 size = Vector2(50, 200)
 
-[sub_resource type="CircleShape2D" id="CircleShape2D_walldetector"]
-radius = 80.0
-
 [node name="Player" type="CharacterBody2D"]
 script = ExtResource("1_player_script")
 
@@ -557,38 +556,8 @@ position = Vector2(-1, 0)
 texture = ExtResource("6_head")
 offset = Vector2(9, 33)
 
-[node name="LeftClimbArm" type="Node2D" parent="."]
-position = Vector2(-40, -150)
+[node name="MovementMechanic" type="Node" parent="."]
+script = ExtResource("8_movement_mechanic")
 
-[node name="LeftArmSprite" type="Sprite2D" parent="LeftClimbArm"]
-visible = false
-scale = Vector2(0.25, 0.25)
-texture = ExtResource("7_arm")
-offset = Vector2(136, -20)
-
-[node name="LeftArmRaycast" type="RayCast2D" parent="LeftClimbArm"]
-enabled = true
-target_position = Vector2(0, -100)
-collision_mask = 2
-
-[node name="RightClimbArm" type="Node2D" parent="."]
-position = Vector2(40, -150)
-
-[node name="RightArmSprite" type="Sprite2D" parent="RightClimbArm"]
-visible = false
-scale = Vector2(0.25, 0.25)
-texture = ExtResource("7_arm")
-offset = Vector2(136, -20)
-
-[node name="RightArmRaycast" type="RayCast2D" parent="RightClimbArm"]
-enabled = true
-target_position = Vector2(0, -100)
-collision_mask = 2
-
-[node name="WallDetector" type="Area2D" parent="."]
-collision_layer = 0
-collision_mask = 2
-
-[node name="DetectorShape" type="CollisionShape2D" parent="WallDetector"]
-position = Vector2(0, -100)
-shape = SubResource("CircleShape2D_walldetector")
+[node name="GravityMechanic" type="Node" parent="."]
+script = ExtResource("9_gravity_mechanic")

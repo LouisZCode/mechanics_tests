@@ -14,9 +14,12 @@ offset_bottom = 700.0
 color = Color(0.4, 0.3, 0.2, 1)
 
 [node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="TestGround"]
+position = Vector2(0, 30.875)
+scale = Vector2(1, 0.959375)
 polygon = PackedVector2Array(-500, 500, 2000, 500, 2000, 700, -500, 700)
 
 [node name="ClimbableWall" type="StaticBody2D" parent="."]
+visible = false
 collision_layer = 2
 collision_mask = 0
 
@@ -34,6 +37,3 @@ polygon = PackedVector2Array(900, -200, 1000, -200, 1000, 500, 900, 500)
 
 [node name="Player" parent="." instance=ExtResource("1_player")]
 position = Vector2(640, 400)
-gravity = 0.0
-climb_pull_strength = 50000.0
-climb_pull_strength_both_hands = 5000.0
