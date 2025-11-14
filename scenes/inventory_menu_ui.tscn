@@ -74,6 +74,16 @@ grow_horizontal = 2
 grow_vertical = 2
 color = Color(0.3, 0.3, 0.3, 1)
 
+[node name="Highlight" type="ColorRect" parent="Panel/VBoxContainer/InventoryGrid/Slot0"]
+visible = false
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(1, 0.8, 0, 0.5)
+
 [node name="Icon" type="TextureRect" parent="Panel/VBoxContainer/InventoryGrid/Slot0"]
 layout_mode = 1
 anchors_preset = 15
@@ -112,6 +122,16 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 color = Color(0.3, 0.3, 0.3, 1)
+
+[node name="Highlight" type="ColorRect" parent="Panel/VBoxContainer/InventoryGrid/Slot1"]
+visible = false
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(1, 0.8, 0, 0.5)
 
 [node name="Icon" type="TextureRect" parent="Panel/VBoxContainer/InventoryGrid/Slot1"]
 layout_mode = 1
@@ -152,6 +172,16 @@ grow_horizontal = 2
 grow_vertical = 2
 color = Color(0.3, 0.3, 0.3, 1)
 
+[node name="Highlight" type="ColorRect" parent="Panel/VBoxContainer/InventoryGrid/Slot2"]
+visible = false
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(1, 0.8, 0, 0.5)
+
 [node name="Icon" type="TextureRect" parent="Panel/VBoxContainer/InventoryGrid/Slot2"]
 layout_mode = 1
 anchors_preset = 15
@@ -190,6 +220,16 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 color = Color(0.3, 0.3, 0.3, 1)
+
+[node name="Highlight" type="ColorRect" parent="Panel/VBoxContainer/InventoryGrid/Slot3"]
+visible = false
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(1, 0.8, 0, 0.5)
 
 [node name="Icon" type="TextureRect" parent="Panel/VBoxContainer/InventoryGrid/Slot3"]
 layout_mode = 1
@@ -230,6 +270,16 @@ grow_horizontal = 2
 grow_vertical = 2
 color = Color(0.3, 0.3, 0.3, 1)
 
+[node name="Highlight" type="ColorRect" parent="Panel/VBoxContainer/InventoryGrid/Slot4"]
+visible = false
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(1, 0.8, 0, 0.5)
+
 [node name="Icon" type="TextureRect" parent="Panel/VBoxContainer/InventoryGrid/Slot4"]
 layout_mode = 1
 anchors_preset = 15
@@ -268,6 +318,16 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 color = Color(0.3, 0.3, 0.3, 1)
+
+[node name="Highlight" type="ColorRect" parent="Panel/VBoxContainer/InventoryGrid/Slot5"]
+visible = false
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(1, 0.8, 0, 0.5)
 
 [node name="Icon" type="TextureRect" parent="Panel/VBoxContainer/InventoryGrid/Slot5"]
 layout_mode = 1
@@ -320,6 +380,16 @@ grow_horizontal = 2
 grow_vertical = 2
 color = Color(0.4, 0.35, 0.2, 1)
 
+[node name="Highlight" type="ColorRect" parent="Panel/VBoxContainer/QuickslotGrid/QSlot0"]
+visible = false
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(1, 0.8, 0, 0.5)
+
 [node name="Icon" type="TextureRect" parent="Panel/VBoxContainer/QuickslotGrid/QSlot0"]
 layout_mode = 1
 anchors_preset = 15
@@ -359,6 +429,16 @@ grow_horizontal = 2
 grow_vertical = 2
 color = Color(0.4, 0.35, 0.2, 1)
 
+[node name="Highlight" type="ColorRect" parent="Panel/VBoxContainer/QuickslotGrid/QSlot1"]
+visible = false
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(1, 0.8, 0, 0.5)
+
 [node name="Icon" type="TextureRect" parent="Panel/VBoxContainer/QuickslotGrid/QSlot1"]
 layout_mode = 1
 anchors_preset = 15
@@ -397,6 +477,16 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 color = Color(0.4, 0.35, 0.2, 1)
+
+[node name="Highlight" type="ColorRect" parent="Panel/VBoxContainer/QuickslotGrid/QSlot2"]
+visible = false
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(1, 0.8, 0, 0.5)
 
 [node name="Icon" type="TextureRect" parent="Panel/VBoxContainer/QuickslotGrid/QSlot2"]
 layout_mode = 1

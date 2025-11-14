@@ -246,6 +246,61 @@ func has_item(item_id: String, quantity: int = 1) -> bool:
 	"""Check if inventory has at least the specified quantity of an item"""
 	return get_item_count(item_id) >= quantity
 
+# ============================================================================
+# INVENTORY MANAGEMENT (UI INTERACTIONS)
+# ============================================================================
+
+func swap_slots(from_idx: int, from_is_quick: bool, to_idx: int, to_is_quick: bool) -> bool:
+	"""Swap items between two slots (any combination of main/quickslots)
+	Returns true if swap was successful"""
+
+	# Get source and target arrays
+	var from_array = quickslots if from_is_quick else main_inventory
+	var to_array = quickslots if to_is_quick else main_inventory
+
+	# Validate indices
+	if from_idx < 0 or from_idx >= from_array.size():
+		push_warning("Invalid from_idx: %d" % from_idx)
+		return false
+	if to_idx < 0 or to_idx >= to_array.size():
+		push_warning("Invalid to_idx: %d" % to_idx)
+		return false
+
+	# Get the slots
+	var from_slot = from_array[from_idx]
+	var to_slot = to_array[to_idx]
+
+	# If both slots are empty, nothing to do
+	if from_slot.is_empty() and to_slot.is_empty():
+		return false
+
+	# Store from_slot data
+	var temp_item = from_slot.item_data
+	var temp_quantity = from_slot.quantity
+
+	# Move to_slot to from_slot
+	if to_slot.is_empty():
+		from_slot.clear()
+	else:
+		from_slot.set_item(to_slot.item_data, to_slot.quantity)
+
+	# Move temp (original from_slot) to to_slot
+	if temp_item == null:
+		to_slot.clear()
+	else:
+		to_slot.set_item(temp_item, temp_quantity)
+
+	# Emit signal
+	inventory_changed.emit()
+	_recalculate_weight()
+
+	return true
+
+func move_to_quickslot(main_idx: int, quick_idx: int) -> bool:
+	"""Move item from main inventory to quickslot (swaps if quickslot occupied)
+	Convenience wrapper for swap_slots()"""
+	return swap_slots(main_idx, false, quick_idx, true)
+
 func is_active() -> bool:
 	"""Check if this mechanic is currently active"""
 	return true  # Inventory is always active
