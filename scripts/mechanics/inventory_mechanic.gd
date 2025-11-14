@@ -274,6 +274,14 @@ func swap_slots(from_idx: int, from_is_quick: bool, to_idx: int, to_is_quick: bo
 	if from_slot.is_empty() and to_slot.is_empty():
 		return false
 
+	# Try to combine stacks first (if same item and stackable)
+	if _try_combine_stacks(from_slot, to_slot):
+		# Stacking succeeded - emit signals and return
+		inventory_changed.emit()
+		_recalculate_weight()
+		return true
+
+	# Stacking failed or not applicable - do swap instead
 	# Store from_slot data
 	var temp_item = from_slot.item_data
 	var temp_quantity = from_slot.quantity
@@ -300,6 +308,42 @@ func move_to_quickslot(main_idx: int, quick_idx: int) -> bool:
 	"""Move item from main inventory to quickslot (swaps if quickslot occupied)
 	Convenience wrapper for swap_slots()"""
 	return swap_slots(main_idx, false, quick_idx, true)
+
+func _try_combine_stacks(from_slot: InventorySlot, to_slot: InventorySlot) -> bool:
+	"""Try to combine two slots if they contain stackable items of the same type.
+	Returns true if stacking occurred, false if items can't be stacked"""
+
+	# Can't stack if either slot is empty
+	if from_slot.is_empty() or to_slot.is_empty():
+		return false
+
+	# Can't stack if items are different
+	if from_slot.item_data.item_id != to_slot.item_data.item_id:
+		return false
+
+	# Can't stack if item isn't stackable (max_stack = 1 for unique items)
+	if from_slot.item_data.max_stack <= 1:
+		return false
+
+	# Can't stack if target is already at max capacity
+	if to_slot.quantity >= from_slot.item_data.max_stack:
+		return false
+
+	# Calculate how much we can add to target
+	var space_in_target = from_slot.item_data.max_stack - to_slot.quantity
+	var amount_to_move = min(from_slot.quantity, space_in_target)
+
+	# Move items from source to target
+	to_slot.add_quantity(amount_to_move)
+	from_slot.remove_quantity(amount_to_move)
+
+	# If source is now empty, clear it
+	if from_slot.quantity <= 0:
+		from_slot.clear()
+
+	print("Stacked %d items - Target now has %d/%d" % [amount_to_move, to_slot.quantity, to_slot.item_data.max_stack])
+
+	return true
 
 func is_active() -> bool:
 	"""Check if this mechanic is currently active"""
