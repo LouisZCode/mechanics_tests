@@ -33,7 +33,7 @@ var current_run_multiplier: float = 2.5
 
 @export_group("Inventory")
 ## Maximum main inventory slots
-@export var base_max_main_slots: int = 10
+@export var base_max_main_slots: int = 6
 ## Maximum quickslot slots
 @export var base_max_quick_slots: int = 3
 ## Weight thresholds for speed penalties (kg)
@@ -45,7 +45,7 @@ var current_run_multiplier: float = 2.5
 @export var quickslot_weight_multiplier: float = 0.7
 
 # Current stats (upgradeable)
-var current_max_main_slots: int = 10
+var current_max_main_slots: int = 6
 var current_max_quick_slots: int = 3
 var current_weight_threshold_1: float = 7.0
 var current_weight_threshold_2: float = 10.0

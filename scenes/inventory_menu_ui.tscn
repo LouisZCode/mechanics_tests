@@ -1,0 +1,433 @@
+[gd_scene load_steps=2 format=3 uid="uid://inventory_menu_ui"]
+
+[ext_resource type="Script" path="res://scripts/ui/inventory_menu_ui.gd" id="1_inventory_menu"]
+
+[node name="InventoryMenuUI" type="CanvasLayer"]
+process_mode = 3
+layer = 50
+script = ExtResource("1_inventory_menu")
+
+[node name="Background" type="ColorRect" parent="."]
+visible = false
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0, 0, 0, 0.7)
+
+[node name="Panel" type="Panel" parent="."]
+visible = false
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -300.0
+offset_top = -250.0
+offset_right = 300.0
+offset_bottom = 250.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="Panel"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 20.0
+offset_top = 20.0
+offset_right = -20.0
+offset_bottom = -20.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Title" type="Label" parent="Panel/VBoxContainer"]
+layout_mode = 2
+text = "INVENTORY"
+horizontal_alignment = 1
+
+[node name="HSeparator" type="HSeparator" parent="Panel/VBoxContainer"]
+layout_mode = 2
+
+[node name="InventoryLabel" type="Label" parent="Panel/VBoxContainer"]
+layout_mode = 2
+text = "Main Inventory: 0/6"
+
+[node name="InventoryGrid" type="GridContainer" parent="Panel/VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_constants/h_separation = 10
+theme_override_constants/v_separation = 10
+columns = 3
+
+[node name="Slot0" type="Panel" parent="Panel/VBoxContainer/InventoryGrid"]
+custom_minimum_size = Vector2(80, 80)
+layout_mode = 2
+
+[node name="Background" type="ColorRect" parent="Panel/VBoxContainer/InventoryGrid/Slot0"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.3, 0.3, 0.3, 1)
+
+[node name="Icon" type="TextureRect" parent="Panel/VBoxContainer/InventoryGrid/Slot0"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 5.0
+offset_top = 5.0
+offset_right = -5.0
+offset_bottom = -25.0
+grow_horizontal = 2
+grow_vertical = 2
+expand_mode = 1
+stretch_mode = 5
+
+[node name="Quantity" type="Label" parent="Panel/VBoxContainer/InventoryGrid/Slot0"]
+layout_mode = 1
+anchors_preset = 12
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_top = -20.0
+grow_horizontal = 2
+grow_vertical = 0
+text = "0"
+horizontal_alignment = 1
+
+[node name="Slot1" type="Panel" parent="Panel/VBoxContainer/InventoryGrid"]
+custom_minimum_size = Vector2(80, 80)
+layout_mode = 2
+
+[node name="Background" type="ColorRect" parent="Panel/VBoxContainer/InventoryGrid/Slot1"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.3, 0.3, 0.3, 1)
+
+[node name="Icon" type="TextureRect" parent="Panel/VBoxContainer/InventoryGrid/Slot1"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 5.0
+offset_top = 5.0
+offset_right = -5.0
+offset_bottom = -25.0
+grow_horizontal = 2
+grow_vertical = 2
+expand_mode = 1
+stretch_mode = 5
+
+[node name="Quantity" type="Label" parent="Panel/VBoxContainer/InventoryGrid/Slot1"]
+layout_mode = 1
+anchors_preset = 12
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_top = -20.0
+grow_horizontal = 2
+grow_vertical = 0
+text = "0"
+horizontal_alignment = 1
+
+[node name="Slot2" type="Panel" parent="Panel/VBoxContainer/InventoryGrid"]
+custom_minimum_size = Vector2(80, 80)
+layout_mode = 2
+
+[node name="Background" type="ColorRect" parent="Panel/VBoxContainer/InventoryGrid/Slot2"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.3, 0.3, 0.3, 1)
+
+[node name="Icon" type="TextureRect" parent="Panel/VBoxContainer/InventoryGrid/Slot2"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 5.0
+offset_top = 5.0
+offset_right = -5.0
+offset_bottom = -25.0
+grow_horizontal = 2
+grow_vertical = 2
+expand_mode = 1
+stretch_mode = 5
+
+[node name="Quantity" type="Label" parent="Panel/VBoxContainer/InventoryGrid/Slot2"]
+layout_mode = 1
+anchors_preset = 12
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_top = -20.0
+grow_horizontal = 2
+grow_vertical = 0
+text = "0"
+horizontal_alignment = 1
+
+[node name="Slot3" type="Panel" parent="Panel/VBoxContainer/InventoryGrid"]
+custom_minimum_size = Vector2(80, 80)
+layout_mode = 2
+
+[node name="Background" type="ColorRect" parent="Panel/VBoxContainer/InventoryGrid/Slot3"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.3, 0.3, 0.3, 1)
+
+[node name="Icon" type="TextureRect" parent="Panel/VBoxContainer/InventoryGrid/Slot3"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 5.0
+offset_top = 5.0
+offset_right = -5.0
+offset_bottom = -25.0
+grow_horizontal = 2
+grow_vertical = 2
+expand_mode = 1
+stretch_mode = 5
+
+[node name="Quantity" type="Label" parent="Panel/VBoxContainer/InventoryGrid/Slot3"]
+layout_mode = 1
+anchors_preset = 12
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_top = -20.0
+grow_horizontal = 2
+grow_vertical = 0
+text = "0"
+horizontal_alignment = 1
+
+[node name="Slot4" type="Panel" parent="Panel/VBoxContainer/InventoryGrid"]
+custom_minimum_size = Vector2(80, 80)
+layout_mode = 2
+
+[node name="Background" type="ColorRect" parent="Panel/VBoxContainer/InventoryGrid/Slot4"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.3, 0.3, 0.3, 1)
+
+[node name="Icon" type="TextureRect" parent="Panel/VBoxContainer/InventoryGrid/Slot4"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 5.0
+offset_top = 5.0
+offset_right = -5.0
+offset_bottom = -25.0
+grow_horizontal = 2
+grow_vertical = 2
+expand_mode = 1
+stretch_mode = 5
+
+[node name="Quantity" type="Label" parent="Panel/VBoxContainer/InventoryGrid/Slot4"]
+layout_mode = 1
+anchors_preset = 12
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_top = -20.0
+grow_horizontal = 2
+grow_vertical = 0
+text = "0"
+horizontal_alignment = 1
+
+[node name="Slot5" type="Panel" parent="Panel/VBoxContainer/InventoryGrid"]
+custom_minimum_size = Vector2(80, 80)
+layout_mode = 2
+
+[node name="Background" type="ColorRect" parent="Panel/VBoxContainer/InventoryGrid/Slot5"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.3, 0.3, 0.3, 1)
+
+[node name="Icon" type="TextureRect" parent="Panel/VBoxContainer/InventoryGrid/Slot5"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 5.0
+offset_top = 5.0
+offset_right = -5.0
+offset_bottom = -25.0
+grow_horizontal = 2
+grow_vertical = 2
+expand_mode = 1
+stretch_mode = 5
+
+[node name="Quantity" type="Label" parent="Panel/VBoxContainer/InventoryGrid/Slot5"]
+layout_mode = 1
+anchors_preset = 12
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_top = -20.0
+grow_horizontal = 2
+grow_vertical = 0
+text = "0"
+horizontal_alignment = 1
+
+[node name="HSeparator2" type="HSeparator" parent="Panel/VBoxContainer"]
+layout_mode = 2
+
+[node name="QuickslotLabel" type="Label" parent="Panel/VBoxContainer"]
+layout_mode = 2
+text = "Quickslots: 0/3"
+
+[node name="QuickslotGrid" type="HBoxContainer" parent="Panel/VBoxContainer"]
+layout_mode = 2
+theme_override_constants/separation = 10
+alignment = 1
+
+[node name="QSlot0" type="Panel" parent="Panel/VBoxContainer/QuickslotGrid"]
+custom_minimum_size = Vector2(80, 80)
+layout_mode = 2
+
+[node name="Background" type="ColorRect" parent="Panel/VBoxContainer/QuickslotGrid/QSlot0"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.4, 0.35, 0.2, 1)
+
+[node name="Icon" type="TextureRect" parent="Panel/VBoxContainer/QuickslotGrid/QSlot0"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 5.0
+offset_top = 5.0
+offset_right = -5.0
+offset_bottom = -25.0
+grow_horizontal = 2
+grow_vertical = 2
+expand_mode = 1
+stretch_mode = 5
+
+[node name="Quantity" type="Label" parent="Panel/VBoxContainer/QuickslotGrid/QSlot0"]
+layout_mode = 1
+anchors_preset = 12
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_top = -20.0
+grow_horizontal = 2
+grow_vertical = 0
+text = "0"
+horizontal_alignment = 1
+
+[node name="QSlot1" type="Panel" parent="Panel/VBoxContainer/QuickslotGrid"]
+custom_minimum_size = Vector2(80, 80)
+layout_mode = 2
+
+[node name="Background" type="ColorRect" parent="Panel/VBoxContainer/QuickslotGrid/QSlot1"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.4, 0.35, 0.2, 1)
+
+[node name="Icon" type="TextureRect" parent="Panel/VBoxContainer/QuickslotGrid/QSlot1"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 5.0
+offset_top = 5.0
+offset_right = -5.0
+offset_bottom = -25.0
+grow_horizontal = 2
+grow_vertical = 2
+expand_mode = 1
+stretch_mode = 5
+
+[node name="Quantity" type="Label" parent="Panel/VBoxContainer/QuickslotGrid/QSlot1"]
+layout_mode = 1
+anchors_preset = 12
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_top = -20.0
+grow_horizontal = 2
+grow_vertical = 0
+text = "0"
+horizontal_alignment = 1
+
+[node name="QSlot2" type="Panel" parent="Panel/VBoxContainer/QuickslotGrid"]
+custom_minimum_size = Vector2(80, 80)
+layout_mode = 2
+
+[node name="Background" type="ColorRect" parent="Panel/VBoxContainer/QuickslotGrid/QSlot2"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.4, 0.35, 0.2, 1)
+
+[node name="Icon" type="TextureRect" parent="Panel/VBoxContainer/QuickslotGrid/QSlot2"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 5.0
+offset_top = 5.0
+offset_right = -5.0
+offset_bottom = -25.0
+grow_horizontal = 2
+grow_vertical = 2
+expand_mode = 1
+stretch_mode = 5
+
+[node name="Quantity" type="Label" parent="Panel/VBoxContainer/QuickslotGrid/QSlot2"]
+layout_mode = 1
+anchors_preset = 12
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_top = -20.0
+grow_horizontal = 2
+grow_vertical = 0
+text = "0"
+horizontal_alignment = 1
+
+[node name="HSeparator3" type="HSeparator" parent="Panel/VBoxContainer"]
+layout_mode = 2
+
+[node name="HelpText" type="Label" parent="Panel/VBoxContainer"]
+layout_mode = 2
+text = "Press I or Tab to close"
+horizontal_alignment = 1

@@ -1,4 +1,4 @@
-[gd_scene load_steps=8 format=3 uid="uid://be6q7jfn843n8"]
+[gd_scene load_steps=9 format=3 uid="uid://be6q7jfn843n8"]
 
 [ext_resource type="PackedScene" uid="uid://6s6offppodr7" path="res://scenes/player.tscn" id="1_player"]
 [ext_resource type="Texture2D" uid="uid://bdp6d3ifotoya" path="res://environments/house.png" id="1_tefeu"]
@@ -7,6 +7,7 @@
 [ext_resource type="PackedScene" uid="uid://eak3m7p5r2x4" path="res://scenes/player_stats_ui.tscn" id="4_player_stats_ui"]
 [ext_resource type="PackedScene" path="res://scenes/debug_console.tscn" id="5_debug_console"]
 [ext_resource type="PackedScene" path="res://scenes/quickslot_ui.tscn" id="6_quickslot_ui"]
+[ext_resource type="PackedScene" path="res://scenes/inventory_menu_ui.tscn" id="7_inventory_menu_ui"]
 
 [node name="main" type="Node2D"]
 
@@ -160,5 +161,7 @@ position = Vector2(1100, 450)
 [node name="PlayerStatsUI" parent="." instance=ExtResource("4_player_stats_ui")]
 
 [node name="QuickslotUI" parent="." instance=ExtResource("6_quickslot_ui")]
+
+[node name="InventoryMenuUI" parent="." instance=ExtResource("7_inventory_menu_ui")]
 
 [node name="DebugConsole" parent="." instance=ExtResource("5_debug_console")]
