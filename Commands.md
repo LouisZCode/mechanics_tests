@@ -29,10 +29,11 @@ Type `help` in console to see all commands. Here are the most useful:
 - `upgrade gathering_range_1` - Increase gathering range
 - `upgrade weight_capacity_1` - Increase weight capacity
 
-**Items:**
+**Items & Equipment:**
 - `give wood 10` - Add 10 wood to inventory (instant)
+- `give shovel 1 true` - Add shovel to quickslot (for attacking/gathering)
 - `additem stone 5` - Spawn 5 stone items around player
-- `additem ore` - Spawn 1 ore item at player position
+- `equip 0` - Equip quickslot 0 (makes it your active tool)
 
 **Teleport:**
 - `goto spawn` - Teleport to spawn point
@@ -43,7 +44,8 @@ Type `help` in console to see all commands. Here are the most useful:
 **Utility:**
 - `help` - Show all available commands
 - `clear` - Clear console output
-- `items` - List all available items
+- `items` - List all available items (wood, stone, ore, shovel)
+- `locations` - List all teleport locations
 
 ### Command Features
 
@@ -147,34 +149,55 @@ Type `help` in console to see all commands. Here are the most useful:
 
 ---
 
-#### Item Commands
+#### Item & Equipment Commands
 
-**give \<item\> [amount]**
-- Adds items directly to inventory (no pickup animation)
+**give \<item\> [amount] [true]**
+- Adds items directly to inventory or quickslot (no pickup animation)
 - Items bypass gathering time
-- Available items: wood, stone, ore
+- Available items: wood, stone, ore, shovel
 - Amount is optional (default: 1)
+- Add `true` as 3rd parameter to add to quickslot instead of main inventory
 
 Examples:
-- `give wood 10` - Add 10 wood instantly
-- `give stone 5` - Add 5 stone instantly
-- `give ore` - Add 1 ore instantly
+- `give wood 10` - Add 10 wood to main inventory
+- `give stone 5` - Add 5 stone to main inventory
+- `give shovel 1 true` - Add shovel to quickslot (for equipping)
+- `give ore` - Add 1 ore to main inventory
 
 **additem \<item\> [amount]**
 - Spawns physical items in the game world
 - Items spawn in a circle around the player
 - Must walk over them to pick up
-- Available items: wood, stone, ore
+- Available items: wood, stone, ore, shovel
 - Amount is optional (default: 1)
 
 Examples:
 - `additem wood 10` - Spawn 10 wood items around player
 - `additem stone 5` - Spawn 5 stone items in a circle
-- `additem ore` - Spawn 1 ore at player position
+- `additem shovel` - Spawn 1 shovel at player position
+
+**equip \<slot_index\>**
+- Equips an item from the specified quickslot
+- Slot indices: 0, 1, 2 (corresponding to quickslots 1, 2, 3)
+- Equipped item appears in quickslot UI with golden highlight
+- Equipped tools provide passive bonuses (e.g., shovel = 50% faster gathering)
+- Equipped weapons can be used for attacks
+
+Examples:
+- `equip 0` - Equip item in first quickslot
+- `equip 1` - Equip item in second quickslot
+- `equip 2` - Equip item in third quickslot
 
 **Difference between give and additem:**
-- `give` = Instant inventory addition (no world item)
+- `give` = Instant inventory/quickslot addition (no world item)
 - `additem` = Physical items spawn that you can see and pick up
+
+**Complete attack/equipment workflow:**
+1. `give shovel 1 true` - Add shovel to quickslot
+2. `equip 0` - Equip the shovel
+3. Right-click to enter action mode
+4. Hold left-click to wind up attack (2 seconds for shovel)
+5. Release to execute attack
 
 ---
 
@@ -204,7 +227,32 @@ Examples:
 
 ---
 
+---
+
+### Testing Attack & Equipment System
+
+**How to Test:**
+1. Give yourself a shovel in quickslot: `give shovel 1 true`
+2. Equip it: `equip 0`
+3. Right-click to enter action mode (weapon ready)
+4. Hold left-click for 2 seconds (windup)
+5. Release to swing attack
+
+**How to Test Gathering Bonus:**
+1. Spawn wood items: `additem wood 5`
+2. WITHOUT shovel: Gather one (takes 1.5s)
+3. WITH shovel equipped: Gather one (takes 1.0s = 50% faster!)
+
+---
+
 ### Example Workflow
+
+**Test Attack System:**
+```
+give shovel 1 true
+equip 0
+# Now right-click to ready weapon, hold left-click to wind up, release to attack
+```
 
 **Quick Item Testing:**
 ```

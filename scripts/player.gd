@@ -14,6 +14,8 @@ extends CharacterBody2D
 @onready var gravity_mechanic: GravityMechanic = $GravityMechanic
 @onready var gathering: GatheringMechanic = $GatheringMechanic
 @onready var inventory: InventoryMechanic = $InventoryMechanic
+@onready var equipment_manager: EquipmentManager = $EquipmentManager
+@onready var attack: AttackMechanic = $AttackMechanic
 @onready var climbing: ClimbingMechanic = $ClimbingMechanic
 
 # State
@@ -68,6 +70,9 @@ func _physics_process(delta):
 	if is_aiming:
 		update_arm_rotation(mouse_pos, movement.facing_right)
 
+	# Execute attack mechanic (handles action mode and windup)
+	var attack_state = attack.execute(delta)
+
 	# Execute mechanics
 	# Climbing takes priority over normal movement
 	var climb_state = climbing.execute(delta)
@@ -76,12 +81,15 @@ func _physics_process(delta):
 		# Normal movement and gravity when not climbing
 		gravity_mechanic.execute(delta)
 		var movement_state = movement.execute(delta, not is_aiming)
-		gathering.execute(delta)
+
+		# Only allow gathering if not in action mode or winding up attack
+		if not attack_state.is_action_mode and not attack_state.is_winding_up:
+			gathering.execute(delta)
 
 		# Update animations for normal movement
 		update_animations(movement_state)
 	else:
-		# Climbing mode - disable gathering
+		# Climbing mode - disable gathering and attacking
 		# Animations for climbing (for now, just show idle)
 		anim.play("idle")
 

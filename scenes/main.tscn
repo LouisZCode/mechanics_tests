@@ -1,26 +1,91 @@
-[gd_scene load_steps=6 format=3 uid="uid://be6q7jfn843n8"]
+[gd_scene load_steps=8 format=3 uid="uid://be6q7jfn843n8"]
 
 [ext_resource type="PackedScene" uid="uid://6s6offppodr7" path="res://scenes/player.tscn" id="1_player"]
+[ext_resource type="Texture2D" uid="uid://bdp6d3ifotoya" path="res://environments/house.png" id="1_tefeu"]
 [ext_resource type="PackedScene" uid="uid://bq6j7r8tat4u2" path="res://scenes/pickable_item.tscn" id="2_pickable_item"]
 [ext_resource type="PackedScene" uid="uid://c8j2k5oap1w3" path="res://scenes/inventory_ui.tscn" id="3_inventory_ui"]
-[ext_resource type="PackedScene" path="res://scenes/player_stats_ui.tscn" id="4_player_stats_ui"]
+[ext_resource type="PackedScene" uid="uid://eak3m7p5r2x4" path="res://scenes/player_stats_ui.tscn" id="4_player_stats_ui"]
 [ext_resource type="PackedScene" path="res://scenes/debug_console.tscn" id="5_debug_console"]
+[ext_resource type="PackedScene" path="res://scenes/quickslot_ui.tscn" id="6_quickslot_ui"]
 
 [node name="main" type="Node2D"]
 
-[node name="TestGround" type="StaticBody2D" parent="."]
+[node name="TestGround_Cave" type="StaticBody2D" parent="."]
 
-[node name="ColorRect" type="ColorRect" parent="TestGround"]
+[node name="ColorRect" type="ColorRect" parent="TestGround_Cave"]
 offset_left = -500.0
 offset_top = 500.0
 offset_right = 2000.0
 offset_bottom = 700.0
 color = Color(0.4, 0.3, 0.2, 1)
 
-[node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="TestGround"]
+[node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="TestGround_Cave"]
 position = Vector2(0, 30.875)
 scale = Vector2(1, 0.959375)
 polygon = PackedVector2Array(-500, 500, 2000, 500, 2000, 700, -500, 700)
+
+[node name="TestGround_Cave_right" type="StaticBody2D" parent="TestGround_Cave"]
+position = Vector2(2176, 688)
+
+[node name="ColorRect" type="ColorRect" parent="TestGround_Cave/TestGround_Cave_right"]
+offset_left = -500.0
+offset_top = 500.0
+offset_right = 2000.0
+offset_bottom = 700.0
+color = Color(0.4, 0.3, 0.2, 1)
+
+[node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="TestGround_Cave/TestGround_Cave_right"]
+position = Vector2(0, 30.875)
+scale = Vector2(1, 0.959375)
+polygon = PackedVector2Array(-500, 500, 2000, 500, 2000, 700, -500, 700)
+
+[node name="TestGround_Cave_left" type="StaticBody2D" parent="TestGround_Cave"]
+position = Vector2(-2249, 1002)
+
+[node name="ColorRect" type="ColorRect" parent="TestGround_Cave/TestGround_Cave_left"]
+offset_left = -500.0
+offset_top = 500.0
+offset_right = 2000.0
+offset_bottom = 700.0
+color = Color(0.4, 0.3, 0.2, 1)
+
+[node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="TestGround_Cave/TestGround_Cave_left"]
+position = Vector2(0, 30.875)
+scale = Vector2(1, 0.959375)
+polygon = PackedVector2Array(-500, 500, 2000, 500, 2000, 700, -500, 700)
+
+[node name="TestGround_Cave_right" type="StaticBody2D" parent="TestGround_Cave/TestGround_Cave_left"]
+
+[node name="ColorRect" type="ColorRect" parent="TestGround_Cave/TestGround_Cave_left/TestGround_Cave_right"]
+offset_left = -500.0
+offset_top = 500.0
+offset_right = 2000.0
+offset_bottom = 700.0
+color = Color(0.4, 0.3, 0.2, 1)
+
+[node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="TestGround_Cave/TestGround_Cave_left/TestGround_Cave_right"]
+position = Vector2(0, 30.875)
+scale = Vector2(1, 0.959375)
+polygon = PackedVector2Array(-500, 500, 2000, 500, 2000, 700, -500, 700)
+
+[node name="TestGround_Home" type="StaticBody2D" parent="."]
+position = Vector2(-1160, -610)
+
+[node name="ColorRect" type="ColorRect" parent="TestGround_Home"]
+offset_left = -500.0
+offset_top = 500.0
+offset_right = 2000.0
+offset_bottom = 700.0
+color = Color(0.4, 0.3, 0.2, 1)
+
+[node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="TestGround_Home"]
+position = Vector2(-64, 31)
+scale = Vector2(1, 0.959375)
+polygon = PackedVector2Array(-500, 500, 2000, 500, 2000, 700, -500, 700)
+
+[node name="Sprite2D" type="Sprite2D" parent="TestGround_Home"]
+position = Vector2(444, 269)
+texture = ExtResource("1_tefeu")
 
 [node name="ClimbableWall" type="StaticBody2D" parent="."]
 collision_layer = 2
@@ -37,6 +102,40 @@ color = Color(0.6, 0.4, 0.3, 1)
 position = Vector2(-2.6688232, 0.36608887)
 scale = Vector2(1.0039415, 1.0008929)
 polygon = PackedVector2Array(777, -200, 1110, -200, 1110, 500, 777, 500)
+
+[node name="ClimbableWall_right" type="StaticBody2D" parent="ClimbableWall"]
+position = Vector2(1216, 702)
+collision_layer = 2
+collision_mask = 0
+
+[node name="WallVisual" type="ColorRect" parent="ClimbableWall/ClimbableWall_right"]
+offset_left = 777.0
+offset_top = -263.0
+offset_right = 1110.0
+offset_bottom = 500.0
+color = Color(0.6, 0.4, 0.3, 1)
+
+[node name="CollisionShape2D" type="CollisionPolygon2D" parent="ClimbableWall/ClimbableWall_right"]
+position = Vector2(-2.6688232, 0.36608887)
+scale = Vector2(1.0039415, 1.0008929)
+polygon = PackedVector2Array(789.55676, -265.12936, 1103.32, -255.13828, 1110, 500, 777, 500)
+
+[node name="ClimbableWall_left" type="StaticBody2D" parent="ClimbableWall"]
+position = Vector2(-1614, 635)
+collision_layer = 2
+collision_mask = 0
+
+[node name="WallVisual" type="ColorRect" parent="ClimbableWall/ClimbableWall_left"]
+offset_left = 777.0
+offset_top = -200.0
+offset_right = 1110.0
+offset_bottom = 881.0
+color = Color(0.6, 0.4, 0.3, 1)
+
+[node name="CollisionShape2D" type="CollisionPolygon2D" parent="ClimbableWall/ClimbableWall_left"]
+position = Vector2(-2.6688232, 0.36608887)
+scale = Vector2(1.0039415, 1.0008929)
+polygon = PackedVector2Array(777, -200, 1110, -200, 1102.324, 900.8295, 796.5293, 890.83856)
 
 [node name="Player" parent="." instance=ExtResource("1_player")]
 position = Vector2(640, 400)
@@ -59,5 +158,7 @@ position = Vector2(1100, 450)
 [node name="InventoryUI" parent="." instance=ExtResource("3_inventory_ui")]
 
 [node name="PlayerStatsUI" parent="." instance=ExtResource("4_player_stats_ui")]
+
+[node name="QuickslotUI" parent="." instance=ExtResource("6_quickslot_ui")]
 
 [node name="DebugConsole" parent="." instance=ExtResource("5_debug_console")]

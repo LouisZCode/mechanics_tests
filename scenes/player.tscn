@@ -13,6 +13,8 @@
 [ext_resource type="Script" uid="uid://dqbxdbir4cus2" path="res://scripts/mechanics/gathering_mechanic.gd" id="10_gathering_mechanic"]
 [ext_resource type="Script" uid="uid://cl5nbdyutdnc6" path="res://scripts/mechanics/inventory_mechanic.gd" id="11_inventory_mechanic"]
 [ext_resource type="Script" path="res://scripts/mechanics/climbing_mechanic.gd" id="12_climbing_mechanic"]
+[ext_resource type="Script" path="res://scripts/mechanics/equipment_manager.gd" id="13_equipment_manager"]
+[ext_resource type="Script" path="res://scripts/mechanics/attack_mechanic.gd" id="14_attack_mechanic"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_ur7pv"]
 atlas = ExtResource("4_running")
@@ -576,6 +578,12 @@ script = ExtResource("10_gathering_mechanic")
 
 [node name="InventoryMechanic" type="Node" parent="."]
 script = ExtResource("11_inventory_mechanic")
+
+[node name="EquipmentManager" type="Node" parent="."]
+script = ExtResource("13_equipment_manager")
+
+[node name="AttackMechanic" type="Node" parent="."]
+script = ExtResource("14_attack_mechanic")
 
 [node name="ClimbingMechanic" type="Node" parent="."]
 script = ExtResource("12_climbing_mechanic")

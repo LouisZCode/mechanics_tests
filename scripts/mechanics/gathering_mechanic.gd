@@ -11,6 +11,7 @@ signal gathering_progress(progress: float, total: float)  # For UI feedback
 var player: CharacterBody2D
 var detection_area: Area2D
 var inventory: InventoryMechanic
+var equipment_manager: Node
 var nearby_items: Array[Area2D] = []
 var nearest_item: Area2D = null
 var cooldown_timer = 0.0
@@ -27,6 +28,7 @@ func _ready():
 	# Get the ItemDetectionArea (will be added as sibling)
 	call_deferred("_setup_detection_area")
 	call_deferred("_setup_inventory")
+	call_deferred("_setup_equipment_manager")
 
 func _setup_detection_area():
 	detection_area = player.get_node_or_null("ItemDetectionArea")
@@ -40,6 +42,11 @@ func _setup_inventory():
 	inventory = player.get_node_or_null("InventoryMechanic")
 	if not inventory:
 		push_warning("InventoryMechanic not found on player. Gathering will work but items won't be stored.")
+
+func _setup_equipment_manager():
+	equipment_manager = player.get_node_or_null("EquipmentManager")
+	if not equipment_manager:
+		push_warning("EquipmentManager not found on player. Tool bonuses will not apply.")
 
 func _on_item_entered(area: Area2D):
 	"""Track items that enter detection range"""
@@ -188,7 +195,7 @@ func gather_item(item: Area2D):
 		print("Gathered: unknown item x%d" % quantity)
 
 func get_item_gather_time(item: Area2D) -> float:
-	"""Get the gather time for a specific item (modified by gather speed upgrades)"""
+	"""Get the gather time for a specific item (modified by gather speed upgrades and tool bonuses)"""
 	var base_time: float
 
 	if not is_instance_valid(item):
@@ -201,7 +208,17 @@ func get_item_gather_time(item: Area2D) -> float:
 	# Apply gather speed multiplier from upgrades
 	# Higher multiplier = faster gathering (e.g., 1.5 = 50% faster, divide time by 1.5)
 	var speed_multiplier = PlayerGlobals.get_gather_speed_multiplier()
-	return base_time / speed_multiplier
+
+	# Apply tool gathering bonus if a tool is equipped
+	var tool_bonus = 1.0
+	if equipment_manager and equipment_manager.has_method("get_equipped_item"):
+		var equipped_item = equipment_manager.get_equipped_item()
+		if equipped_item and equipped_item.has_gathering_bonus():
+			tool_bonus = equipped_item.tool_gathering_speed_bonus
+
+	# Combine both multipliers
+	var total_multiplier = speed_multiplier * tool_bonus
+	return base_time / total_multiplier
 
 func is_active() -> bool:
 	"""Check if this mechanic is currently active (gathering in progress)"""

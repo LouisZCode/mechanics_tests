@@ -52,6 +52,18 @@ enum ItemCategory {
 @export var stat_attack_damage: int = 0  # For weapons
 @export var stat_nutrition: int = 0  # For food
 
+# Attack Properties (for weapons/tools that can attack)
+@export_group("Attack Properties", "attack_")
+@export var attack_windup_time: float = 0.0  # Seconds to hold before attack executes
+@export var attack_cooldown: float = 0.5  # Delay between attacks
+@export var attack_range: float = 50.0  # Attack reach in pixels
+@export var attack_animation: String = ""  # Animation name (e.g., "shovel_attack")
+
+# Tool Bonuses (passive benefits when equipped)
+@export_group("Tool Bonuses", "tool_")
+@export var tool_gathering_speed_bonus: float = 1.0  # Multiplier for gathering (1.5 = 50% faster)
+@export var tool_mining_bonus: float = 1.0  # Future: mining speed bonus
+
 # Advanced Properties
 @export_group("Advanced")
 @export var is_sellable: bool = true
@@ -97,3 +109,15 @@ func is_resource() -> bool:
 func is_consumable() -> bool:
 	"""Check if this is consumable"""
 	return item_type == ItemType.CONSUMABLE
+
+func is_weapon() -> bool:
+	"""Check if this is a weapon"""
+	return item_type == ItemType.WEAPON
+
+func can_attack() -> bool:
+	"""Check if this item can be used for attacking"""
+	return (item_type == ItemType.WEAPON or item_type == ItemType.TOOL) and stat_attack_damage > 0
+
+func has_gathering_bonus() -> bool:
+	"""Check if this item provides gathering speed bonus"""
+	return tool_gathering_speed_bonus > 1.0

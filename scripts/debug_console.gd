@@ -23,6 +23,7 @@ var item_paths: Dictionary = {
 	"wood": "res://resources/items/wood.tres",
 	"stone": "res://resources/items/stone.tres",
 	"ore": "res://resources/items/ore.tres",
+	"shovel": "res://resources/items/shovel.tres",
 }
 
 func _ready():
@@ -111,6 +112,8 @@ func execute_command(command: String):
 			cmd_give(args)
 		"additem":
 			cmd_additem(args)
+		"equip":
+			cmd_equip(args)
 		"goto":
 			cmd_goto(args)
 		"heal":
@@ -153,9 +156,10 @@ func cmd_help():
 	log_output("         weight_capacity_1")
 	log_output("")
 	log_output("[color=yellow]Items:[/color]")
-	log_output("  give <item> <amount> - Add item to inventory")
+	log_output("  give <item> <amount> [true] - Add item to inventory/quickslot")
 	log_output("  additem <item> <amount> - Spawn items at player")
-	log_output("    Items: wood, stone, ore")
+	log_output("  equip <slot> - Equip quickslot (0, 1, 2)")
+	log_output("    Items: wood, stone, ore, shovel")
 	log_output("")
 	log_output("[color=yellow]Teleport:[/color]")
 	log_output("  goto <location> - Teleport to location")
@@ -204,8 +208,9 @@ func cmd_upgrade(args: Array):
 
 func cmd_give(args: Array):
 	if args.size() < 1:
-		log_output("[color=red]Usage: give <item> [amount][/color]")
-		log_output("Available items: wood, stone, ore")
+		log_output("[color=red]Usage: give <item> [amount] [true][/color]")
+		log_output("Available items: wood, stone, ore, shovel")
+		log_output("Add 'true' as 3rd arg to add to quickslot")
 		return
 
 	var item_name = args[0].to_lower()
@@ -213,9 +218,13 @@ func cmd_give(args: Array):
 	if args.size() >= 2:
 		amount = args[1].to_int()
 
+	var to_quickslot = false
+	if args.size() >= 3:
+		to_quickslot = args[2].to_lower() == "true"
+
 	if not item_paths.has(item_name):
 		log_output("[color=red]Unknown item: " + item_name + "[/color]")
-		log_output("Available: wood, stone, ore")
+		log_output("Available: wood, stone, ore, shovel")
 		return
 
 	var player = get_tree().get_first_node_in_group("player")
@@ -229,13 +238,14 @@ func cmd_give(args: Array):
 		return
 
 	var item_data = load(item_paths[item_name])
-	inventory.add_item(item_data, amount)
-	log_output("[color=lime]Added to inventory: " + item_name + " x" + str(amount) + "[/color]")
+	inventory.add_item(item_data, amount, to_quickslot)
+	var location = "quickslot" if to_quickslot else "inventory"
+	log_output("[color=lime]Added to " + location + ": " + item_name + " x" + str(amount) + "[/color]")
 
 func cmd_additem(args: Array):
 	if args.size() < 1:
 		log_output("[color=red]Usage: additem <item> [amount][/color]")
-		log_output("Available items: wood, stone, ore")
+		log_output("Available items: wood, stone, ore, shovel")
 		return
 
 	var item_name = args[0].to_lower()
@@ -245,7 +255,7 @@ func cmd_additem(args: Array):
 
 	if not item_paths.has(item_name):
 		log_output("[color=red]Unknown item: " + item_name + "[/color]")
-		log_output("Available: wood, stone, ore")
+		log_output("Available: wood, stone, ore, shovel")
 		return
 
 	var player = get_tree().get_first_node_in_group("player")
@@ -347,6 +357,33 @@ func cmd_items():
 	for item_name in item_paths.keys():
 		var item_data = load(item_paths[item_name])
 		log_output("  " + item_name + " - " + item_data.item_name + " (Weight: " + str(item_data.weight) + "kg)")
+
+func cmd_equip(args: Array):
+	if args.size() < 1:
+		log_output("[color=red]Usage: equip <slot_index>[/color]")
+		log_output("Slot indices: 0, 1, 2")
+		return
+
+	var slot_index = args[0].to_int()
+
+	var player = get_tree().get_first_node_in_group("player")
+	if not player:
+		log_output("[color=red]Player not found[/color]")
+		return
+
+	var equipment_manager = player.get_node_or_null("EquipmentManager")
+	if not equipment_manager:
+		log_output("[color=red]EquipmentManager not found[/color]")
+		return
+
+	if equipment_manager.equip_slot(slot_index):
+		var equipped_item = equipment_manager.get_equipped_item()
+		if equipped_item:
+			log_output("[color=lime]Equipped: " + equipped_item.item_name + " (slot " + str(slot_index) + ")[/color]")
+		else:
+			log_output("[color=orange]Unequipped (slot was empty)[/color]")
+	else:
+		log_output("[color=red]Failed to equip slot " + str(slot_index) + " (invalid or empty)[/color]")
 
 func log_output(text: String):
 	output_log.append_text(text + "\n")
