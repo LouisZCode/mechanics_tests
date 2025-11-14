@@ -51,12 +51,19 @@ func toggle_console():
 	panel.visible = is_open
 
 	if is_open:
-		input_field.grab_focus()
-		# Pause the game when console is open
+		# Make console work during pause
+		process_mode = Node.PROCESS_MODE_ALWAYS
+		# Now pause the game
 		get_tree().paused = true
+		# Focus input after one frame
+		await get_tree().process_frame
+		input_field.grab_focus()
 	else:
 		input_field.release_focus()
+		# Unpause the game
 		get_tree().paused = false
+		# Return to normal process mode
+		process_mode = Node.PROCESS_MODE_INHERIT
 
 func _on_input_text_submitted(text: String):
 	if text.strip_edges().is_empty():

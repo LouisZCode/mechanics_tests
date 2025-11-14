@@ -3,7 +3,6 @@
 [ext_resource type="Script" path="res://scripts/ui/inventory_menu_ui.gd" id="1_inventory_menu"]
 
 [node name="InventoryMenuUI" type="CanvasLayer"]
-process_mode = 3
 layer = 50
 script = ExtResource("1_inventory_menu")
 

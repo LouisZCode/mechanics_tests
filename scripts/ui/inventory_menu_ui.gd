@@ -140,7 +140,9 @@ func toggle_inventory():
 	panel.visible = is_open
 
 	if is_open:
-		# Pause game
+		# Make inventory work during pause
+		process_mode = Node.PROCESS_MODE_ALWAYS
+		# Now pause the game
 		get_tree().paused = true
 		# Reset selection to first main inventory slot
 		selected_slot_index = 0
@@ -149,8 +151,10 @@ func toggle_inventory():
 		update_display()
 		update_selection_highlight()
 	else:
-		# Unpause game
+		# Unpause the game
 		get_tree().paused = false
+		# Return to normal process mode
+		process_mode = Node.PROCESS_MODE_INHERIT
 
 func update_display():
 	"""Update all slots and labels"""
