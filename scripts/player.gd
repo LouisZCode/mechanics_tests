@@ -51,6 +51,55 @@ func _on_weight_changed(current_weight: float, speed_multiplier: float):
 		print("Weight: %.1fkg - Speed reduced to %d%%" % [current_weight, speed_percent])
 	# Visual feedback could be added here (screen tint, player color, etc.)
 
+func _input(event):
+	"""Handle immediate input events for quickslot selection"""
+	if not equipment_manager:
+		return
+
+	# Direct quickslot selection with number keys
+	if event.is_action_pressed("quickslot_1"):
+		equipment_manager.equip_slot(0)
+	elif event.is_action_pressed("quickslot_2"):
+		equipment_manager.equip_slot(1)
+	elif event.is_action_pressed("quickslot_3"):
+		equipment_manager.equip_slot(2)
+
+	# Mouse wheel cycling through quickslots
+	elif event.is_action_pressed("quickslot_next"):
+		_cycle_quickslot(1)  # Cycle forward
+	elif event.is_action_pressed("quickslot_prev"):
+		_cycle_quickslot(-1)  # Cycle backward
+
+func _cycle_quickslot(direction: int):
+	"""Cycle through quickslots with mouse wheel"""
+	if not equipment_manager or not inventory:
+		return
+
+	var current_slot = equipment_manager.get_equipped_slot_index()
+	var max_slots = inventory.quickslots.size()
+
+	if max_slots == 0:
+		return
+
+	# Start from slot 0 if nothing is equipped
+	if current_slot == -1:
+		current_slot = 0 if direction > 0 else max_slots - 1
+	else:
+		# Cycle to next/previous slot with wrapping
+		current_slot = (current_slot + direction + max_slots) % max_slots
+
+	# Try to find a non-empty slot (optional: remove this if you want to allow selecting empty slots)
+	var attempts = 0
+	while attempts < max_slots:
+		if inventory.quickslots[current_slot] and not inventory.quickslots[current_slot].is_empty():
+			equipment_manager.equip_slot(current_slot)
+			return
+		current_slot = (current_slot + direction + max_slots) % max_slots
+		attempts += 1
+
+	# If no non-empty slots found, just equip the calculated slot anyway
+	equipment_manager.equip_slot(current_slot)
+
 func _physics_process(delta):
 	# Handle aiming
 	is_aiming = Input.is_action_pressed("ui_right_click")

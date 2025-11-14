@@ -11,6 +11,7 @@ extends CanvasLayer
 
 var inventory_mechanic: Node
 var equipment_manager: Node
+var pulse_time: float = 0.0  # For pulsing animation
 
 func _ready():
 	# Wait a frame for player and mechanics to be ready
@@ -43,6 +44,23 @@ func _ready():
 	# Initial update
 	update_all_slots()
 
+func _process(delta):
+	"""Animate the pulse effect for equipped slot"""
+	pulse_time += delta * 2.0  # Speed of pulsing
+
+	# Update the equipped slot's animation
+	if equipment_manager:
+		var equipped_index = equipment_manager.get_equipped_slot_index()
+		if equipped_index >= 0 and equipped_index < slot_nodes.size():
+			var slot_panel = slot_nodes[equipped_index]
+			var highlight = slot_panel.get_node_or_null("Highlight")
+			if highlight and highlight.visible:
+				# Pulse the highlight between 0.6 and 1.0 alpha
+				var pulse_alpha = 0.6 + sin(pulse_time) * 0.2 + 0.2
+				var current_color = highlight.color
+				current_color.a = pulse_alpha
+				highlight.color = current_color
+
 func update_all_slots():
 	"""Update all 3 quickslot displays"""
 	if not inventory_mechanic:
@@ -70,9 +88,33 @@ func update_slot(slot_index: int, is_equipped: bool):
 	var icon_rect = slot_panel.get_node("Icon")
 	var quantity_label = slot_panel.get_node("Quantity")
 	var highlight = slot_panel.get_node("Highlight")
+	var background = slot_panel.get_node("Background")
+	var slot_number_label = slot_panel.get_node_or_null("SlotNumber")
 
-	# Update highlight
-	highlight.visible = is_equipped
+	# Update highlight and background based on equipped status
+	if is_equipped:
+		# Bright highlight for equipped slot
+		highlight.visible = true
+		highlight.color = Color(1, 0.9, 0, 0.8)  # Bright gold, more opaque
+		background.color = Color(0.3, 0.3, 0.2, 0.9)  # Slightly brighter background
+
+		# Add border effect by making the panel itself have a modulate
+		slot_panel.modulate = Color(1.2, 1.2, 1.0, 1.0)  # Slight brightness boost
+
+		# Make slot number more visible when selected
+		if slot_number_label:
+			slot_number_label.modulate = Color(1.5, 1.5, 0.8, 1.0)  # Bright yellow
+			slot_number_label.add_theme_font_size_override("font_size", 16)
+	else:
+		# Normal state for unequipped slots
+		highlight.visible = false
+		background.color = Color(0.2, 0.2, 0.2, 0.8)  # Darker background
+		slot_panel.modulate = Color(1.0, 1.0, 1.0, 1.0)  # Normal brightness
+
+		# Normal slot number appearance
+		if slot_number_label:
+			slot_number_label.modulate = Color(0.7, 0.7, 0.7, 1.0)  # Subtle gray
+			slot_number_label.add_theme_font_size_override("font_size", 12)
 
 	# Update content
 	if slot and not slot.is_empty():
