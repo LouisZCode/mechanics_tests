@@ -12,6 +12,7 @@ signal windup_progress(progress: float, total: float)
 var player: CharacterBody2D
 var equipment_manager: Node
 var gathering_mechanic: Node
+var inventory_mechanic: Node
 
 # State tracking
 var is_action_mode: bool = false
@@ -27,6 +28,7 @@ func _ready():
 
 	call_deferred("_setup_equipment_manager")
 	call_deferred("_setup_gathering_mechanic")
+	call_deferred("_setup_inventory_mechanic")
 
 func _setup_equipment_manager():
 	equipment_manager = player.get_node_or_null("EquipmentManager")
@@ -37,6 +39,11 @@ func _setup_gathering_mechanic():
 	gathering_mechanic = player.get_node_or_null("GatheringMechanic")
 	if not gathering_mechanic:
 		push_warning("AttackMechanic: GatheringMechanic not found. Attack/gather conflict detection disabled.")
+
+func _setup_inventory_mechanic():
+	inventory_mechanic = player.get_node_or_null("InventoryMechanic")
+	if not inventory_mechanic:
+		push_warning("AttackMechanic: InventoryMechanic not found. Durability system disabled.")
 
 func can_activate() -> bool:
 	"""Check if we can enter action mode or start attack"""
@@ -159,6 +166,33 @@ func execute_attack():
 		# Attack executed successfully
 		var damage = equipped_item.stat_attack_damage
 		attack_executed.emit(equipped_item, damage)
+
+		# Reduce durability if inventory mechanic is available
+		if inventory_mechanic and equipment_manager:
+			var equipped_slot_index = equipment_manager.get_equipped_slot_index()
+			if equipped_slot_index >= 0 and equipped_slot_index < inventory_mechanic.quickslots.size():
+				var slot = inventory_mechanic.quickslots[equipped_slot_index]
+				if slot and not slot.is_empty():
+					# Get durability cost for attacking (default 5 if not specified)
+					var durability_cost = 5
+					if equipped_item.has("durability_cost_attack"):
+						durability_cost = equipped_item.durability_cost_attack
+
+					# Reduce durability
+					var item_broke = slot.reduce_durability(durability_cost)
+
+					if item_broke:
+						print("Your %s broke!" % equipped_item.item_name)
+						# Exit action mode since weapon broke
+						exit_action_mode()
+					else:
+						var durability_percent = slot.get_durability_percentage()
+						if durability_percent <= 0.25:
+							print("Warning: %s durability critical! (%d/%d)" % [
+								equipped_item.item_name,
+								slot.current_durability,
+								equipped_item.stat_durability
+							])
 
 		# Start cooldown
 		cooldown_timer = equipped_item.attack_cooldown

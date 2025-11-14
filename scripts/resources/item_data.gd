@@ -52,6 +52,14 @@ enum ItemCategory {
 @export var stat_attack_damage: int = 0  # For weapons
 @export var stat_nutrition: int = 0  # For food
 
+# Durability Costs (how much durability each action uses)
+@export_group("Durability Costs", "durability_cost_")
+@export var durability_cost_attack: int = 5  # Cost when used for attacking
+@export var durability_cost_dig: int = 1  # Cost when used for digging
+@export var durability_cost_mine: int = 2  # Cost when mining hard materials
+@export var durability_cost_gather: int = 1  # Cost when used to gather resources
+@export var durability_cost_chop: int = 1  # Cost when chopping wood
+
 # Attack Properties (for weapons/tools that can attack)
 @export_group("Attack Properties", "attack_")
 @export var attack_windup_time: float = 0.0  # Seconds to hold before attack executes

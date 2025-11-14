@@ -90,6 +90,7 @@ func update_slot(slot_index: int, is_equipped: bool):
 	var highlight = slot_panel.get_node("Highlight")
 	var background = slot_panel.get_node("Background")
 	var slot_number_label = slot_panel.get_node_or_null("SlotNumber")
+	var durability_bar = slot_panel.get_node_or_null("DurabilityBar")
 
 	# Update highlight and background based on equipped status
 	if is_equipped:
@@ -134,11 +135,48 @@ func update_slot(slot_index: int, is_equipped: bool):
 			quantity_label.text = str(slot.quantity)
 		else:
 			quantity_label.text = ""  # Don't show quantity for non-stackable items
+
+		# Update durability bar if item has durability
+		if durability_bar:
+			if slot.has_durability():
+				durability_bar.visible = true
+				var percent = slot.get_durability_percentage()
+
+				# Create or update the fill rect
+				var fill = durability_bar.get_node_or_null("Fill")
+				if not fill:
+					# Create a fill ColorRect if it doesn't exist
+					fill = ColorRect.new()
+					fill.name = "Fill"
+					durability_bar.add_child(fill)
+
+				# Update fill size and color based on percentage
+				fill.anchor_right = percent
+				fill.anchor_bottom = 1.0
+
+				# Color based on durability percentage
+				if percent <= 0.25:
+					fill.color = Color(1, 0, 0, 0.8)  # Red
+				elif percent <= 0.5:
+					fill.color = Color(1, 0.5, 0, 0.8)  # Orange
+				elif percent <= 0.75:
+					fill.color = Color(1, 1, 0, 0.8)  # Yellow
+				else:
+					fill.color = Color(0, 1, 0, 0.8)  # Green
+
+				# Add text label showing durability
+				quantity_label.text += "\n%d%%" % int(percent * 100)
+			else:
+				# Item doesn't use durability
+				if durability_bar:
+					durability_bar.visible = false
 	else:
 		# Empty slot
 		icon_rect.texture = null
 		icon_rect.visible = false
 		quantity_label.text = ""
+		if durability_bar:
+			durability_bar.visible = false
 
 func _on_inventory_changed():
 	"""Handle inventory changes"""

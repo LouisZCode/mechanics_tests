@@ -5,10 +5,14 @@ extends Resource
 
 @export var item_data: ItemData = null
 @export var quantity: int = 0
+@export var current_durability: int = 0  # Current durability (0 = unused/infinite)
 
 func _init(p_item_data: ItemData = null, p_quantity: int = 0):
 	item_data = p_item_data
 	quantity = p_quantity
+	# Initialize durability to max when item is set
+	if p_item_data and p_item_data.stat_durability > 0:
+		current_durability = p_item_data.stat_durability
 
 func is_empty() -> bool:
 	"""Check if this slot is empty"""
@@ -67,11 +71,52 @@ func set_item(p_item_data: ItemData, p_quantity: int = 1):
 	"""Set this slot to a specific item and quantity"""
 	item_data = p_item_data
 	quantity = p_quantity
+	# Initialize durability for tools/weapons
+	if p_item_data and p_item_data.stat_durability > 0:
+		current_durability = p_item_data.stat_durability
+	else:
+		current_durability = 0
 
 func clear():
 	"""Empty this slot"""
 	item_data = null
 	quantity = 0
+	current_durability = 0
+
+func reduce_durability(amount: int) -> bool:
+	"""
+	Reduce durability by specified amount
+	Returns: true if item broke (durability reached 0)
+	"""
+	# No durability for this item (resources, etc)
+	if not item_data or item_data.stat_durability <= 0:
+		return false
+
+	current_durability -= amount
+
+	# Item broke!
+	if current_durability <= 0:
+		# For stacked items, only one breaks
+		if quantity > 1:
+			quantity -= 1
+			current_durability = item_data.stat_durability  # Reset for next item
+			return false  # Slot still has items
+		else:
+			# Last item broke, clear slot
+			clear()
+			return true
+
+	return false
+
+func get_durability_percentage() -> float:
+	"""Get durability as a percentage (0.0 to 1.0)"""
+	if not item_data or item_data.stat_durability <= 0:
+		return 1.0  # Items without durability are always "full"
+	return float(current_durability) / float(item_data.stat_durability)
+
+func has_durability() -> bool:
+	"""Check if this item uses durability"""
+	return item_data != null and item_data.stat_durability > 0
 
 func get_total_weight() -> float:
 	"""Calculate total weight of items in this slot"""
@@ -84,7 +129,24 @@ func get_display_text() -> String:
 	if is_empty():
 		return "[Empty]"
 
+	var text = ""
 	if item_data.max_stack > 1:
-		return "%s x%d" % [item_data.item_name, quantity]
+		text = "%s x%d" % [item_data.item_name, quantity]
 	else:
-		return item_data.item_name
+		text = item_data.item_name
+
+	# Add durability display if item has durability
+	if has_durability():
+		var percent = get_durability_percentage()
+		if percent < 1.0:
+			text += " (%d/%d)" % [current_durability, item_data.stat_durability]
+
+			# Add color indicator
+			if percent <= 0.25:
+				text = "[color=red]" + text + "[/color]"  # Critical
+			elif percent <= 0.5:
+				text = "[color=orange]" + text + "[/color]"  # Low
+			elif percent <= 0.75:
+				text = "[color=yellow]" + text + "[/color]"  # Medium
+
+	return text
