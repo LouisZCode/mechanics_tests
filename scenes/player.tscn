@@ -1,4 +1,4 @@
-[gd_scene load_steps=84 format=3 uid="uid://6s6offppodr7"]
+[gd_scene load_steps=88 format=3 uid="uid://6s6offppodr7"]
 
 [ext_resource type="Script" uid="uid://dl6blsrayjmx0" path="res://scripts/player.gd" id="1_player_script"]
 [ext_resource type="Texture2D" uid="uid://bjq3ysjhm6ier" path="res://assets/player_assets/farmer_idle.png" id="2_idle"]
@@ -12,9 +12,9 @@
 [ext_resource type="Script" uid="uid://cprta7w46lst3" path="res://scripts/mechanics/gravity_mechanic.gd" id="9_gravity_mechanic"]
 [ext_resource type="Script" uid="uid://dqbxdbir4cus2" path="res://scripts/mechanics/gathering_mechanic.gd" id="10_gathering_mechanic"]
 [ext_resource type="Script" uid="uid://cl5nbdyutdnc6" path="res://scripts/mechanics/inventory_mechanic.gd" id="11_inventory_mechanic"]
-[ext_resource type="Script" path="res://scripts/mechanics/climbing_mechanic.gd" id="12_climbing_mechanic"]
-[ext_resource type="Script" path="res://scripts/mechanics/equipment_manager.gd" id="13_equipment_manager"]
-[ext_resource type="Script" path="res://scripts/mechanics/attack_mechanic.gd" id="14_attack_mechanic"]
+[ext_resource type="Script" uid="uid://c84lfl6tccst1" path="res://scripts/mechanics/climbing_mechanic.gd" id="12_climbing_mechanic"]
+[ext_resource type="Script" uid="uid://dxobfv674bhup" path="res://scripts/mechanics/equipment_manager.gd" id="13_equipment_manager"]
+[ext_resource type="Script" uid="uid://duqbbq5uxd21g" path="res://scripts/mechanics/attack_mechanic.gd" id="14_attack_mechanic"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_ur7pv"]
 atlas = ExtResource("4_running")
@@ -550,7 +550,7 @@ shape = SubResource("RectangleShape2D_collision")
 [node name="Camera2D" type="Camera2D" parent="."]
 
 [node name="ArmPivot" type="Node2D" parent="."]
-position = Vector2(-11, -133)
+position = Vector2(-3, -133)
 
 [node name="Arm" type="Sprite2D" parent="ArmPivot"]
 visible = false
