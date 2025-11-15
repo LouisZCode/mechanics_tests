@@ -16,7 +16,6 @@ gather_time = 0.0
 gather_hint = ""
 slots_taken = 2
 max_stack = 1
-quickslot_stack_multiplier = 1.0
 weight = 2.0
 stat_durability = 100
 stat_mining_power = 5

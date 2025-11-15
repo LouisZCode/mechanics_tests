@@ -43,7 +43,7 @@ enum ItemCategory {
 @export_group("Inventory")
 @export var slots_taken: int = 1  # How many inventory slots this item occupies
 @export var max_stack: int = 99  # Maximum stack size (1 = doesn't stack)
-@export_range(0.01, 1.0, 0.01) var quickslot_stack_multiplier: float = 1.0  # Multiplier for max stack in quickslots
+@export var quickslot_max_stack: int = 0  # Max stack in quickslots (0 = use max_stack value)
 @export var weight: float = 1.0  # Affects climbing speed, carry capacity
 
 # Item Stats (for tools/weapons)
@@ -112,7 +112,11 @@ func can_stack_with(other: ItemData) -> bool:
 
 func get_max_stack_for_quickslot() -> int:
 	"""Get the maximum stack size allowed in quickslots"""
-	return max(1, int(max_stack * quickslot_stack_multiplier))
+	# If quickslot_max_stack is 0 or not set, use the regular max_stack
+	if quickslot_max_stack <= 0:
+		return max_stack
+	# Otherwise use the specified quickslot limit
+	return quickslot_max_stack
 
 func get_gather_time_display() -> String:
 	"""Get human-readable gather time"""
