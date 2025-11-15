@@ -1,4 +1,4 @@
-[gd_resource type="Resource" script_class="ItemData" load_steps=2 format=3 uid="uid://b2iak4m6p8x1"]
+[gd_resource type="Resource" script_class="ItemData" load_steps=2 format=3 uid="uid://xrtad7r5dcau"]
 
 [ext_resource type="Script" uid="uid://cu0m41p6gxapu" path="res://scripts/resources/item_data.gd" id="1_1"]
 
@@ -7,13 +7,11 @@ script = ExtResource("1_1")
 item_name = "Stone"
 item_id = "stone"
 description = "Solid stone from the surface. Heavier than wood but still useful."
-gather_time = 2.0
 gather_hint = "Hold F to gather stone"
 weight = 1.5
 stat_attack_damage = 8
 attack_windup_time = 1.0
 attack_cooldown = 1.2
-action_mode_movement_speed = 0.0
 action_mode_can_rotate = false
 action_mode_description = "Bracing"
 sell_value = 8

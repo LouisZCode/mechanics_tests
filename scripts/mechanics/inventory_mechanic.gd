@@ -47,18 +47,21 @@ func can_add_item(item_data: ItemData, quantity: int, to_quickslot: bool = false
 	var target_inventory = quickslots if to_quickslot else main_inventory
 	var remaining = quantity
 
+	# Get effective max stack for this inventory type
+	var effective_max_stack = item_data.get_max_stack_for_quickslot() if to_quickslot else item_data.max_stack
+
 	# Check if can stack with existing items
 	for slot in target_inventory:
-		if slot.can_stack_with(item_data) and slot.has_space_for(remaining):
+		if slot.can_stack_with(item_data) and slot.has_space_for(remaining, effective_max_stack):
 			return true
 		elif slot.can_stack_with(item_data) and not slot.is_empty():
-			var space_in_slot = item_data.max_stack - slot.quantity
+			var space_in_slot = effective_max_stack - slot.quantity
 			remaining -= space_in_slot
 			if remaining <= 0:
 				return true
 
 	# Check for empty slots
-	var empty_slots_needed = ceili(float(remaining) / float(item_data.max_stack))
+	var empty_slots_needed = ceili(float(remaining) / float(effective_max_stack))
 	var empty_slots_available = 0
 
 	for slot in target_inventory:
@@ -76,6 +79,9 @@ func add_item(item_data: ItemData, quantity: int, to_quickslot: bool = false) ->
 	var target_inventory = quickslots if to_quickslot else main_inventory
 	var remaining = quantity
 
+	# Get effective max stack for this inventory type
+	var effective_max_stack = item_data.get_max_stack_for_quickslot() if to_quickslot else item_data.max_stack
+
 	# Try to stack with existing items first
 	for slot in target_inventory:
 		if remaining <= 0:
@@ -86,7 +92,7 @@ func add_item(item_data: ItemData, quantity: int, to_quickslot: bool = false) ->
 			if slot.item_data == null:
 				slot.set_item(item_data, 0)
 
-			var added = slot.add_quantity(remaining)
+			var added = slot.add_quantity(remaining, effective_max_stack)
 			remaining -= added
 
 	# Fill empty slots with remaining items
@@ -95,7 +101,7 @@ func add_item(item_data: ItemData, quantity: int, to_quickslot: bool = false) ->
 			break
 
 		if slot.is_empty():
-			var amount_for_slot = mini(remaining, item_data.max_stack)
+			var amount_for_slot = mini(remaining, effective_max_stack)
 			slot.set_item(item_data, amount_for_slot)
 			remaining -= amount_for_slot
 
@@ -275,11 +281,30 @@ func swap_slots(from_idx: int, from_is_quick: bool, to_idx: int, to_is_quick: bo
 		return false
 
 	# Try to combine stacks first (if same item and stackable)
-	if _try_combine_stacks(from_slot, to_slot):
+	if _try_combine_stacks(from_slot, to_slot, to_is_quick):
 		# Stacking succeeded - emit signals and return
 		inventory_changed.emit()
 		_recalculate_weight()
 		return true
+
+	# EDGE CASE: Dragging item from main to quickslot, but quantity exceeds quickslot limit
+	if not from_is_quick and to_is_quick and not from_slot.is_empty():
+		var quickslot_max = from_slot.item_data.get_max_stack_for_quickslot()
+		if from_slot.quantity > quickslot_max:
+			# Split stack: Move only what fits in quickslot
+			if to_slot.is_empty():
+				# Target is empty - move quickslot_max amount
+				to_slot.set_item(from_slot.item_data, quickslot_max)
+				from_slot.remove_quantity(quickslot_max)
+
+				inventory_changed.emit()
+				_recalculate_weight()
+				print("Split stack: Moved %d to quickslot, %d remains in main inventory" % [quickslot_max, from_slot.quantity])
+				return true
+			else:
+				# Target has different item - can't fit, abort
+				print("Cannot move: Stack too large for quickslot (%d > %d max)" % [from_slot.quantity, quickslot_max])
+				return false
 
 	# Stacking failed or not applicable - do swap instead
 	# Store from_slot data
@@ -309,9 +334,10 @@ func move_to_quickslot(main_idx: int, quick_idx: int) -> bool:
 	Convenience wrapper for swap_slots()"""
 	return swap_slots(main_idx, false, quick_idx, true)
 
-func _try_combine_stacks(from_slot: InventorySlot, to_slot: InventorySlot) -> bool:
+func _try_combine_stacks(from_slot: InventorySlot, to_slot: InventorySlot, to_is_quickslot: bool = false) -> bool:
 	"""Try to combine two slots if they contain stackable items of the same type.
-	Returns true if stacking occurred, false if items can't be stacked"""
+	Returns true if stacking occurred, false if items can't be stacked
+	to_is_quickslot: Whether the target slot is in quickslots (affects max stack)"""
 
 	# Can't stack if either slot is empty
 	if from_slot.is_empty() or to_slot.is_empty():
@@ -325,23 +351,26 @@ func _try_combine_stacks(from_slot: InventorySlot, to_slot: InventorySlot) -> bo
 	if from_slot.item_data.max_stack <= 1:
 		return false
 
+	# Get effective max stack for target slot
+	var effective_max_stack = from_slot.item_data.get_max_stack_for_quickslot() if to_is_quickslot else from_slot.item_data.max_stack
+
 	# Can't stack if target is already at max capacity
-	if to_slot.quantity >= from_slot.item_data.max_stack:
+	if to_slot.quantity >= effective_max_stack:
 		return false
 
 	# Calculate how much we can add to target
-	var space_in_target = from_slot.item_data.max_stack - to_slot.quantity
+	var space_in_target = effective_max_stack - to_slot.quantity
 	var amount_to_move = min(from_slot.quantity, space_in_target)
 
 	# Move items from source to target
-	to_slot.add_quantity(amount_to_move)
+	to_slot.add_quantity(amount_to_move, effective_max_stack)
 	from_slot.remove_quantity(amount_to_move)
 
 	# If source is now empty, clear it
 	if from_slot.quantity <= 0:
 		from_slot.clear()
 
-	print("Stacked %d items - Target now has %d/%d" % [amount_to_move, to_slot.quantity, to_slot.item_data.max_stack])
+	print("Stacked %d items - Target now has %d/%d" % [amount_to_move, to_slot.quantity, effective_max_stack])
 
 	return true
 

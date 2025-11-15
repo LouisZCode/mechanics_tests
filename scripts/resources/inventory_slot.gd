@@ -29,25 +29,29 @@ func can_stack_with(other_item_data: ItemData) -> bool:
 	# Must be same item and stackable
 	return item_data.item_id == other_item_data.item_id and item_data.max_stack > 1
 
-func has_space_for(amount: int) -> bool:
-	"""Check if this slot has space for more of the item"""
+func has_space_for(amount: int, custom_max_stack: int = -1) -> bool:
+	"""Check if this slot has space for more of the item
+	custom_max_stack: Override max stack (used for quickslot limits)"""
 	if is_empty():
 		return true
 
 	if item_data == null:
 		return false
 
-	return (quantity + amount) <= item_data.max_stack
+	var effective_max = custom_max_stack if custom_max_stack > 0 else item_data.max_stack
+	return (quantity + amount) <= effective_max
 
-func add_quantity(amount: int) -> int:
+func add_quantity(amount: int, custom_max_stack: int = -1) -> int:
 	"""
 	Add quantity to this slot
 	Returns: Amount actually added (may be less if stack limit reached)
+	custom_max_stack: Override max stack (used for quickslot limits)
 	"""
 	if item_data == null:
 		return 0
 
-	var space_available = item_data.max_stack - quantity
+	var effective_max = custom_max_stack if custom_max_stack > 0 else item_data.max_stack
+	var space_available = effective_max - quantity
 	var amount_to_add = min(amount, space_available)
 	quantity += amount_to_add
 	return amount_to_add
