@@ -41,8 +41,16 @@ func execute(delta: float, can_move: bool = true) -> Dictionary:
 	Execute movement logic and return state info for animations
 	Returns: {direction: float, is_running: bool, is_backwards: bool}
 	"""
+	# Default to normal speed if using old method
+	return execute_with_multiplier(delta, 1.0 if can_move else 0.0)
+
+func execute_with_multiplier(delta: float, speed_multiplier: float = 1.0) -> Dictionary:
+	"""
+	Execute movement with a specific speed multiplier
+	speed_multiplier: 0.0 = no movement, 0.5 = half speed, 1.0 = normal, 2.0 = double speed
+	"""
 	# Get input
-	current_direction = get_input_direction() if can_move else 0
+	current_direction = get_input_direction() if speed_multiplier > 0 else 0
 
 	# Check if moving backwards
 	var is_backwards = is_moving_backwards()
@@ -59,6 +67,9 @@ func execute(delta: float, can_move: bool = true) -> Dictionary:
 	if inventory:
 		var weight_multiplier = inventory.get_speed_multiplier()
 		current_speed *= weight_multiplier
+
+	# Apply the action mode speed multiplier
+	current_speed *= speed_multiplier
 
 	# Apply horizontal movement
 	player.velocity.x = current_direction * current_speed

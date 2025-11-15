@@ -67,6 +67,13 @@ enum ItemCategory {
 @export var attack_range: float = 50.0  # Attack reach in pixels
 @export var attack_animation: String = ""  # Animation name (e.g., "shovel_attack")
 
+# Action Mode Properties (what happens when right-clicking with this item)
+@export_group("Action Mode", "action_mode_")
+@export var action_mode_movement_speed: float = 0.0  # Movement speed multiplier (0 = stop, 0.5 = half speed, 1.0 = normal, 1.5 = faster)
+@export var action_mode_can_rotate: bool = true  # Can the player rotate/aim while in action mode?
+@export var action_mode_animation: String = ""  # Special animation to play (e.g., "aiming", "blocking")
+@export var action_mode_description: String = "Action mode"  # What to call this mode (e.g., "Aiming", "Blocking", "Charging")
+
 # Tool Bonuses (passive benefits when equipped)
 @export_group("Tool Bonuses", "tool_")
 @export var tool_gathering_speed_bonus: float = 1.0  # Multiplier for gathering (1.5 = 50% faster)

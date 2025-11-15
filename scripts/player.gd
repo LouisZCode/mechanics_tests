@@ -101,22 +101,40 @@ func _cycle_quickslot(direction: int):
 	equipment_manager.equip_slot(current_slot)
 
 func _physics_process(delta):
-	# Handle aiming
+	# Handle aiming/action mode
 	is_aiming = Input.is_action_pressed("ui_right_click")
-	arm.visible = is_aiming
+
+	# Get movement modifier from equipped item (if any)
+	var action_mode_speed_multiplier = 1.0  # Default: normal movement
+	var show_arm = false  # Whether to show arm sprite
+
+	if is_aiming and equipment_manager:
+		var equipped_item = equipment_manager.get_equipped_item()
+		if equipped_item:
+			# Use item's action mode movement speed
+			action_mode_speed_multiplier = equipped_item.action_mode_movement_speed
+			# Only show arm if item allows rotation/aiming
+			show_arm = equipped_item.action_mode_can_rotate
+		else:
+			# No item equipped - default behavior (stop movement, show arm)
+			action_mode_speed_multiplier = 0.0
+			show_arm = true
+
+	arm.visible = is_aiming and show_arm
 
 	# Get mouse position
 	var mouse_pos = get_global_mouse_position()
 
-	# Update facing direction based on mouse
-	movement.update_facing_direction(mouse_pos)
+	# Update facing direction based on mouse (if item allows rotation)
+	if not is_aiming or show_arm:  # Can rotate if not in action mode OR if item allows it
+		movement.update_facing_direction(mouse_pos)
 
 	# Update visuals based on facing
 	update_sprite_facing(movement.facing_right)
 	update_head_rotation(mouse_pos, movement.facing_right)
 
-	# Update arm rotation if aiming
-	if is_aiming:
+	# Update arm rotation if aiming and allowed
+	if is_aiming and show_arm:
 		update_arm_rotation(mouse_pos, movement.facing_right)
 
 	# Execute attack mechanic (handles action mode and windup)
@@ -129,7 +147,8 @@ func _physics_process(delta):
 	if not climb_state.is_climbing:
 		# Normal movement and gravity when not climbing
 		gravity_mechanic.execute(delta)
-		var movement_state = movement.execute(delta, not is_aiming)
+		# Pass the action mode speed multiplier to movement
+		var movement_state = movement.execute_with_multiplier(delta, action_mode_speed_multiplier)
 
 		# Only allow gathering if not in action mode or winding up attack
 		if not attack_state.is_action_mode and not attack_state.is_winding_up:

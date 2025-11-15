@@ -1,15 +1,19 @@
-[gd_resource type="Resource" script_class="ItemData" load_steps=3 format=3 uid="uid://cq8j5sat6u3v1"]
+[gd_resource type="Resource" script_class="ItemData" load_steps=2 format=3 uid="uid://cq8j5sat6u3v1"]
 
 [ext_resource type="Script" uid="uid://cu0m41p6gxapu" path="res://scripts/resources/item_data.gd" id="1_1"]
-[ext_resource type="Texture2D" uid="uid://do6si00pucdqt" path="res://assets/items/ore_256.png" id="1_w3n26"]
 
 [resource]
 script = ExtResource("1_1")
 item_name = "Wood"
 item_id = "wood"
 description = "Basic wood gathered from the surface. Used for crafting and building."
-icon = ExtResource("1_w3n26")
 gather_time = 1.5
 gather_hint = "Hold F to gather wood"
 weight = 0.5
+stat_attack_damage = 3
+attack_windup_time = 0.5
+attack_cooldown = 0.8
+action_mode_movement_speed = 0.8
+action_mode_can_rotate = true
+action_mode_description = "Holding Up"
 sell_value = 5

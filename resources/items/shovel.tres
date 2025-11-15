@@ -1,25 +1,24 @@
-[gd_resource type="Resource" script_class="ItemData" load_steps=2 format=3 uid="uid://shovel_item_001"]
+[gd_resource type="Resource" script_class="ItemData" load_steps=3 format=3 uid="uid://pjlud3t676yi"]
 
-[ext_resource type="Script" path="res://scripts/resources/item_data.gd" id="1_1"]
+[ext_resource type="Script" uid="uid://cu0m41p6gxapu" path="res://scripts/resources/item_data.gd" id="1_1"]
+[ext_resource type="Texture2D" uid="uid://bqa0u808jduc" path="res://assets/items/shovel_256.png" id="1_icdx0"]
 
 [resource]
 script = ExtResource("1_1")
 item_name = "Shovel"
 item_id = "shovel"
 description = "A sturdy shovel. Can be used to dig faster or as a weapon in a pinch."
-icon = null
+icon = ExtResource("1_icdx0")
 item_type = 1
 item_category = 2
 can_be_gathered = false
 gather_time = 0.0
 gather_hint = ""
-slots_taken = 1
 max_stack = 1
 weight = 2.0
 stat_durability = 100
 stat_mining_power = 5
 stat_attack_damage = 15
-stat_nutrition = 0
 durability_cost_attack = 5
 durability_cost_dig = 1
 durability_cost_mine = 2
@@ -29,8 +28,10 @@ attack_windup_time = 2.0
 attack_cooldown = 1.0
 attack_range = 60.0
 attack_animation = "shovel_attack"
+action_mode_movement_speed = 0.3
+action_mode_can_rotate = true
+action_mode_animation = ""
+action_mode_description = "Heavy Stance"
 tool_gathering_speed_bonus = 1.5
 tool_mining_bonus = 1.3
-is_sellable = true
 sell_value = 50
-rarity = 0
